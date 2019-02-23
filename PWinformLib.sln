@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.168
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PWinformLib", "PWinformLib\PWinformLib.csproj", "{48B45E28-B68C-4809-9326-6CA3804E25A2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo", "Demo\Demo.csproj", "{B54E82DA-A55C-4E8C-9A97-B22ACEDB6E37}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{48B45E28-B68C-4809-9326-6CA3804E25A2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{48B45E28-B68C-4809-9326-6CA3804E25A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{48B45E28-B68C-4809-9326-6CA3804E25A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{48B45E28-B68C-4809-9326-6CA3804E25A2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B54E82DA-A55C-4E8C-9A97-B22ACEDB6E37}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B54E82DA-A55C-4E8C-9A97-B22ACEDB6E37}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B54E82DA-A55C-4E8C-9A97-B22ACEDB6E37}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B54E82DA-A55C-4E8C-9A97-B22ACEDB6E37}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D5E6972C-F602-4B6D-A439-7B8F60B45E0F}
+	EndGlobalSection
+EndGlobal
