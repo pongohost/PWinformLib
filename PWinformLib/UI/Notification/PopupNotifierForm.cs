@@ -17,7 +17,7 @@ namespace PWinformLib
     /// <summary>
     /// This is the form of the actual notification window.
     /// </summary>
-    internal class PopupNotifierForm : System.Windows.Forms.Form
+    internal class PopupNotifierForm : Form
     {
         /// <summary>
         /// This prevents the Popup from Activating
@@ -118,12 +118,16 @@ namespace PWinformLib
         private void InitializeComponent()
         {
             this.SuspendLayout();
-            this.ClientSize = new System.Drawing.Size(392, 66);
+            // 
+            // PopupNotifierForm
+            // 
+            this.ClientSize = new System.Drawing.Size(400, 100);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "PopupNotifierForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.TopMost = true;
             this.ResumeLayout(false);
+
         }
 
         /// <summary>
@@ -281,7 +285,7 @@ namespace PWinformLib
         /// <summary>
         /// Create all GDI objects used to paint the form.
         /// </summary>
-        private void AllocateGDIObjects()
+        private void AllocateGDIObjects(PaintEventArgs e)
         {
             rcBody = new Rectangle(0, 0, this.Width, this.Height);
             rcHeader = new Rectangle(0, 0, this.Width, Parent.HeaderHeight);
@@ -330,13 +334,14 @@ namespace PWinformLib
         {
             if (!gdiInitialized)
             {
-                AllocateGDIObjects();
+                AllocateGDIObjects(e);
             }
 
             // draw window
             e.Graphics.FillRectangle(brushBody, rcBody);
-            e.Graphics.FillRectangle(brushHeader, rcHeader);
-            e.Graphics.DrawRectangle(penBorder, rcForm);
+            //top border
+            //e.Graphics.FillRectangle(brushHeader, rcHeader);
+            //e.Graphics.DrawRectangle(penBorder, rcForm);
             if (Parent.ShowGrip)
             {
                 e.Graphics.DrawImage(Properties.Resources.Grip, (int)((this.Width - Properties.Resources.Grip.Width) / 2), (int)((Parent.HeaderHeight - 3) / 2));

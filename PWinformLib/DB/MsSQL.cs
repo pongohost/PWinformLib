@@ -10,26 +10,18 @@ namespace PWinformLib
 {
     public class MsSQL
     {
-        static SqlConnection sqlcon = new SqlConnection();
-        static int mm1 = 1;
-        static int[] mm2 = new int[10] { 0,0,0,0,0,0,0,0,0,0 };
-
-        public static void setpar(String servername, String dbname, String username, String password, String port)
+        //static SqlConnection sqlcon = new SqlConnection();
+        private string ConString = "";
+        
+        public void SetConnection(String servername, String dbname, String username, String password, String port)
         {
-            parameter.Server = servername;
-            parameter.Db = dbname;
-            parameter.Usern = username;
-            parameter.Pass = password;
-            parameter.Port = port;
+            ConString = "Server=" + servername + ","+ port + ";Database=" + dbname + ";User Id=" + username + ";Password=" + password + ";";
         }
 
-        public static void setconnection()
+        public void kuerisql(String perintah,String judul, String pesan)
         {
-            sqlcon.ConnectionString = "Server=" + parameter.Server + ","+ parameter.Port + ";Database=" + parameter.Db + ";User Id=" + parameter.Usern + ";Password=" + parameter.Pass + ";";
-        }
-
-        public static void kuerisql(String perintah,String judul, String pesan)
-        {
+            SqlConnection sqlcon = new SqlConnection();
+            sqlcon.ConnectionString = ConString;
             SqlCommand command = new SqlCommand(perintah, sqlcon);
             sqlcon.Open();
             try
@@ -47,7 +39,7 @@ namespace PWinformLib
             }
         }
         //===============================================================================================
-        public static void insertMultiple(String kueryAwal,String data,String pemisah)
+        public void insertMultiple(String kueryAwal,String data,String pemisah)
         {
             String hasil = insertMultipleAct(kueryAwal, data, pemisah);
             if(hasil.Equals("OK"))
@@ -56,8 +48,10 @@ namespace PWinformLib
                 notification.Error("Query Gagal", hasil);
 
         }
-        public static String insertMultipleAct(String kueryAwal, String data, String pemisah)
+        public String insertMultipleAct(String kueryAwal, String data, String pemisah)
         {
+            SqlConnection sqlcon = new SqlConnection();
+            sqlcon.ConnectionString = ConString;
             string StrQuery = "";
             String status = "";
             using (SqlCommand comm = new SqlCommand())
@@ -88,8 +82,10 @@ namespace PWinformLib
             return status;
         }
         //==========================================================================================================
-        public static DataTable queryTransaction(String kuery, String pemisah)
+        public DataTable queryTransaction(String kuery, String pemisah)
         {
+            SqlConnection sqlcon = new SqlConnection();
+            sqlcon.ConnectionString = ConString;
             string StrQuery = "";
             DataTable dt = new DataTable();
             dt.Columns.Add("Status", typeof(String));
@@ -124,7 +120,7 @@ namespace PWinformLib
             return dt;
         }
 
-        public static DataSet insertAllDatagrid(DataGridView dgv, string kuery, string[] namaKolom, string kueriHapus)
+        public DataSet insertAllDatagrid(DataGridView dgv, string kuery, string[] namaKolom, string kueriHapus)
         {
             DataSet ds = new DataSet();
             ds.Tables.Add(simplemssql(kueriHapus));
@@ -132,16 +128,16 @@ namespace PWinformLib
             return ds;
         }
 
-        public static DataTable insertAllDatagrid(DataGridView dgv, string kuery, string[] namaKolom)
+        public DataTable insertAllDatagrid(DataGridView dgv, string kuery, string[] namaKolom)
         {
             DataTable table1 = new DataTable("insertAllDatagrid");
             table1.Columns.Add("status");
             table1.Columns.Add("Note");
-            using (SqlConnection conn = new SqlConnection("Server=" + parameter.Server + "," + parameter.Port + ";Database=" + parameter.Db + ";User Id=" + parameter.Usern + ";Password=" + parameter.Pass + ";"))
+            using (SqlConnection sqlcon = new SqlConnection(ConString))
             {
                 try
                 {
-                    conn.Open();
+                    sqlcon.Open();
                     string StrQuery = kuery + " VALUES";
                     for (int i = 0; i < dgv.Rows.Count; i++)
                     {
@@ -158,7 +154,7 @@ namespace PWinformLib
                     }
                     StrQuery = StrQuery + ";";
                     Console.Out.WriteLine(StrQuery);
-                    using (SqlCommand comm = new SqlCommand(StrQuery,conn))
+                    using (SqlCommand comm = new SqlCommand(StrQuery,sqlcon))
                     {
                         comm.ExecuteNonQuery();
                     }
@@ -176,12 +172,12 @@ namespace PWinformLib
             return table1;
         }
 
-        public static DataTable simplemssql(String perintah)
+        public DataTable simplemssql(String perintah)
         {
             DataTable table1 = new DataTable("SimpleMsSql");
             table1.Columns.Add("status");
             table1.Columns.Add("affectedrows");
-            using (SqlConnection conn = new SqlConnection("Server=" + parameter.Server + "," + parameter.Port + ";Database=" + parameter.Db + ";User Id=" + parameter.Usern + ";Password=" + parameter.Pass + ";"))
+            using (SqlConnection sqlcon = new SqlConnection(ConString))
             {
                 try
                 {
@@ -203,7 +199,7 @@ namespace PWinformLib
             return table1;
         }
 
-        public static DataSet dgsql(String perintah)
+        public DataSet dgsql(String perintah)
         {
             DataSet ds = new DataSet();
             DataTable dt = new DataTable();
@@ -211,12 +207,12 @@ namespace PWinformLib
             Boolean err = false;
             String errMsg="";
             //using (SqlConnection conn = new SqlConnection("Server=" + server + ";Database=" + db + ";User Id=" + usern + ";Password=" + pass + ";"))
-            using (SqlConnection conn = new SqlConnection("Server=" + parameter.Server + ","+ parameter.Port + ";Database=" + parameter.Db + ";User Id=" + parameter.Usern + ";Password=" + parameter.Pass + ";"))
+            using (SqlConnection sqlcon = new SqlConnection(ConString))
             {
                 try
                 {
-                    conn.Open();
-                    using (SqlCommand cmd = new SqlCommand(perintah, conn))
+                    sqlcon.Open();
+                    using (SqlCommand cmd = new SqlCommand(perintah, sqlcon))
                     {
 
                         dr = cmd.ExecuteReader();
@@ -263,21 +259,21 @@ namespace PWinformLib
                     dtr.Rows.Add(errMsg);
                     ds.Tables.Add(dtr);
                 }
-                conn.Close();
+                sqlcon.Close();
             }
             return ds;
         }
 
-        public static async Task<DataSet> AsyncDsSQL(String sql)
+        public async Task<DataSet> AsyncDsSQL(String sql)
         {
             DataSet ds = new DataSet();
             DataTable dt = new DataTable();
             SqlDataReader dr = null;
             Boolean err = false;
             String errMsg = "";
-            using (SqlConnection conn = new SqlConnection("Server=" + parameter.Server + "," + parameter.Port + ";Database=" + parameter.Db + ";User Id=" + parameter.Usern + ";Password=" + parameter.Pass + ";"))
+            using (SqlConnection sqlcon = new SqlConnection(ConString))
             {
-                using (SqlCommand cmd = new SqlCommand(sql, conn))
+                using (SqlCommand cmd = new SqlCommand(sql, sqlcon))
                 {
                     try
                     {
@@ -330,7 +326,7 @@ namespace PWinformLib
             return ds;
         }
         
-        public static async void tescon(String servername, String dbname, String username, String password, String port)
+        public async void tescon(String servername, String dbname, String username, String password, String port)
         {
             using (SqlConnection conn = new SqlConnection("Server=" + servername + ","+port+";Database=" + dbname + ";User Id=" + username + ";Password=" + password + ";"))
             {
@@ -350,13 +346,13 @@ namespace PWinformLib
             }
         }
 
-        public static async void insertLog(String id,String modul,String pesan,String ip,String hostname,int sessi)
+        public async void insertLog(String id,String modul,String pesan,String ip,String hostname,int sessi)
         {
-            using (SqlConnection conn =  new SqlConnection("Server=" + parameter.Server + "," + parameter.Port + ";Database=" + parameter.Db + ";User Id=" + parameter.Usern + ";Password=" + parameter.Pass + ";"))
+            using (SqlConnection sqlcon = new SqlConnection(ConString))
             {
                 String sql = "EXEC insertLog @ident = '" + id + "',@modul='" + modul + "',@messg='" + Helper.AddSlash(pesan) + "',@ip='" + ip + "',@hostn='" + hostname + "',@sessi=" + sessi;
                 Console.WriteLine(sql);
-                using (SqlCommand cmd = new SqlCommand(sql, conn))
+                using (SqlCommand cmd = new SqlCommand(sql, sqlcon))
                 {
                     try
                     {                        
@@ -373,64 +369,64 @@ namespace PWinformLib
         }
 
         /*++++++++++++++++++++++++++++++++++++ ASYNC ++++++++++++++++++++++++++++++++++++++++++++++++++++=*/
-        public static Task<DataSet> TaskDsSQL(String sql)
+        public Task<DataSet> TaskDsSQL(String sql)
         {
             return Task.Run(() =>
             {
-                DataSet ds = MsSQL.dgsql(sql);
+                DataSet ds = dgsql(sql);
                 return ds;
             });
         }
 
-        public static Task<DataTable> TaskSimpleSQL(String sql)
+        public Task<DataTable> TaskSimpleSQL(String sql)
         {
             return Task.Run(() =>
             {
-                DataTable dt = MsSQL.simplemssql(sql);
+                DataTable dt = simplemssql(sql);
                 return dt;
             });
         }
 
-        public static Task<DataSet> TaskinsertAllDatagrid(DataGridView dgv, string kuery, string[] namaKolom, string kueriHapus)
+        public Task<DataSet> TaskinsertAllDatagrid(DataGridView dgv, string kuery, string[] namaKolom, string kueriHapus)
         {
             return Task.Run(() =>
             {
                 DataSet ds = new DataSet();
                 if (kueriHapus.Length > 2)
                 {
-                    ds.Tables.Add(MsSQL.simplemssql(kueriHapus));
+                    ds.Tables.Add(simplemssql(kueriHapus));
                 }
-                ds.Tables.Add(MsSQL.insertAllDatagrid(dgv, kuery, namaKolom));
+                ds.Tables.Add(insertAllDatagrid(dgv, kuery, namaKolom));
                 return ds;
             });
         }
 
-        public static Task<String> TaskInsertMultiple(String kueryAwal, String data, String pemisah)
+        public Task<String> TaskInsertMultiple(String kueryAwal, String data, String pemisah)
         {
             return Task.Run(() =>
             {
-                String ds = MsSQL.insertMultipleAct(kueryAwal, data, pemisah);
+                String ds = insertMultipleAct(kueryAwal, data, pemisah);
                 return ds;
             });
         }
 
-        public static Task<DataTable> TaskQueryTransaction(String sql, String separator)
+        public Task<DataTable> TaskQueryTransaction(String sql, String separator)
         {
             return Task.Run(() =>
             {
-                DataTable dt = MsSQL.queryTransaction(sql, separator);
+                DataTable dt = queryTransaction(sql, separator);
                 return dt;
             });
         }
 
-        public static async void insertAllDatagridAsync(DataGridView dgv, string kuery, string[] namaKolom, string kueriHapus = "")
+        public async void insertAllDatagridAsync(DataGridView dgv, string kuery, string[] namaKolom, string kueriHapus = "")
         {
             Preloaderani.addSpinnLoad(dgv);
             DataSet ds = await TaskinsertAllDatagrid(dgv, kuery, namaKolom, kueriHapus);
             Preloaderani.remSpinnLoad(dgv);
         }
 
-        public static async void AsyncDgv(DataGridView dgv, String sql)
+        public async void AsyncDgv(DataGridView dgv, String sql)
         {
             Preloaderani.addSpinnLoad(dgv);
             DataSet ds = await TaskDsSQL(sql);

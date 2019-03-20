@@ -11,6 +11,7 @@ using System;
 using System.ComponentModel;
 using System.Windows.Forms;
 using System.Drawing;
+using PWinformLib.UI;
 
 namespace PWinformLib
 {
@@ -221,7 +222,7 @@ namespace PWinformLib
         [Description("Context menu to open when clicking on the options button.")]
         public ContextMenuStrip OptionsMenu { get; set; }
 
-        [Category("Behavior"), DefaultValue(3000)]
+        [Category("Behavior"), DefaultValue(5000)]
         [Description("Time in milliseconds the window is displayed.")]
         public int Delay { get; set; }
 
@@ -237,6 +238,10 @@ namespace PWinformLib
         [Description("Object number")]
         public int ObjectNumber { get; set; }
 
+        [Category("Appearance"), DefaultValue(0)]
+        [Description("Last Position")]
+        public int LastPos { get; set; }
+
         [Category("Appearance")]
         [Description("Size of the window.")]
         public Size Size { get; set; }
@@ -251,35 +256,36 @@ namespace PWinformLib
             // set default values
             HeaderColor = SystemColors.ControlDark;
             BodyColor = SystemColors.Control;
-            ContentColor = SystemColors.ControlText;
+            ContentColor = Color.White;
             BorderColor = SystemColors.WindowFrame;
             ButtonBorderColor = SystemColors.WindowFrame;
             ButtonHoverColor = SystemColors.Highlight;
             ContentHoverColor = SystemColors.HotTrack;
-            GradientPower = 50;
-            ContentFont = new Font("Verdana", 10.0f, FontStyle.Regular | FontStyle.Italic);
-            //ContentFont = SystemFonts.DialogFont;
-            //TitleFont = SystemFonts.CaptionFont;
-            TitleFont = new Font("Verdana", 14.0f, FontStyle.Bold);
-            TitleColor = Color.DarkSlateGray;
+            GradientPower = 0;
+            //ContentFont = new Font("Verdana", 10.0f, FontStyle.Regular | FontStyle.Italic);
+//            ContentFont = CustomFont.GetFont("Helve", 10, FontStyle.Regular);
+//            TitleFont = CustomFont.GetFont("Helve", 12, FontStyle.Regular);
+            //TitleFont = new Font("Verdana", 14.0f, FontStyle.Bold);
+            TitleColor = Color.FromArgb(255,255,255);
             ShowGrip = true;
             Scroll = true;
-            TitlePadding = new Padding(0);
-            ContentPadding = new Padding(0);
-            ImagePadding = new Padding(0);
+            TitlePadding = new Padding(5,5,5,0);
+            ContentPadding = new Padding(5,2,5,5);
+            ImagePadding = new Padding(10);
             HeaderHeight = 9;
             ShowCloseButton = true;
             ShowOptionsButton = false;
             Delay = 3000;
             AnimationInterval = 10;
             AnimationDuration = 1000;
-            Size = new Size(400, 100);
+            posStop = 500;
+            Size = new Size(400, 100 );
 
             frmPopup = new PopupNotifierForm(this);
             frmPopup.TopMost = true;
-            frmPopup.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
-            frmPopup.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
-            frmPopup.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            frmPopup.FormBorderStyle = FormBorderStyle.None;
+            frmPopup.StartPosition = FormStartPosition.Manual;
+            frmPopup.FormBorderStyle = FormBorderStyle.None;
             frmPopup.MouseEnter += new EventHandler(frmPopup_MouseEnter);
             frmPopup.MouseLeave += new EventHandler(frmPopup_MouseLeave);
             frmPopup.CloseClick += new EventHandler(frmPopup_CloseClick);
@@ -302,7 +308,6 @@ namespace PWinformLib
         public void Popup()
         {
             i++;
-            //System.Diagnostics.Debug.WriteLine("jumlah "+ObjectNumber);
             if (!disposed)
             {
                 if (!frmPopup.Visible)
@@ -310,8 +315,13 @@ namespace PWinformLib
                     frmPopup.Size = Size;
                     if (Scroll)
                     {
+                        int tinggi = (int)Helper.getTextHeight(ContentText, 300, CustomFont.GetFont("Helve", 10, FontStyle.Regular));
+                        if(tinggi>50)
+                            frmPopup.Height = (tinggi-50) + frmPopup.Height;
                         posStart = Screen.PrimaryScreen.WorkingArea.Bottom;
-                        posStop = Screen.PrimaryScreen.WorkingArea.Bottom - (frmPopup.Height * ObjectNumber);
+                        //posStop = Screen.PrimaryScreen.WorkingArea.Bottom - (frmPopup.Height * ObjectNumber);
+                        posStop = (LastPos>0)? LastPos-frmPopup.Height : Screen.PrimaryScreen.WorkingArea.Bottom - (frmPopup.Height * ObjectNumber);
+                        LastPos = posStop;
                     }
                     else
                     {
@@ -458,7 +468,7 @@ namespace PWinformLib
         private void tmAnimation_Tick(object sender, EventArgs e)
         {
             long elapsed = sw.ElapsedMilliseconds;
-            //System.Diagnostics.Debug.WriteLine("Jalan.."+elapsed+" X " + DateTime.Now);
+            //System.Diagnostics.Debug.WriteLine("Jalan.."+frmPopup.Size);
             int posCurrent = (int)(posStart + ((posStop - posStart) * elapsed / realAnimationDuration));
             bool neg = (posStop - posStart) < 0;
             if ((neg && posCurrent < posStop) ||
@@ -515,6 +525,7 @@ namespace PWinformLib
                 else
                 {
                     frmPopup.Hide();
+                    //Dispose(true);
                 }
             }
         }
@@ -583,7 +594,10 @@ namespace PWinformLib
             {
                 if (disposing && frmPopup != null)
                 {
+                    frmPopup.Close();
                     frmPopup.Dispose();
+                    frmPopup = null;
+                    MemoryManagement.FlushMemory();
                 }
                 disposed = true;
             }

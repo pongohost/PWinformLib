@@ -9,7 +9,7 @@ using Newtonsoft.Json;
 
 namespace PWinformLib
 {
-    public class bantuDGDTDS
+    public class HelperDGDTDS
     {
         public static void AddToolStripToDgv(DataGridView dgv)
         {

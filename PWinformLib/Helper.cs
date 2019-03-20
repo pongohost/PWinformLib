@@ -8,6 +8,7 @@ using System.Net.Sockets;
 using System.Drawing.Text;
 using System.Linq;
 using System.Drawing;
+using System.IO;
 using System.Threading.Tasks;
 using PWinformLib.Preloader;
 using PWinformLib.UI;
@@ -16,27 +17,6 @@ namespace PWinformLib
 {
     public class Helper
     {
-        public static PrivateFontCollection pfc = new PrivateFontCollection();
-        /*public static void initFont()
-        {
-            addfontfrommemory("Plibs.Resources.Lato-Light.ttf");
-        }
-        private static void addfontfrommemory(String fontName)
-        {                    
-            Stream fontStream = typeof(bantu).Assembly.GetManifestResourceStream(fontName);            
-
-            byte[] fontdata = new byte[fontStream.Length];
-            fontStream.Read(fontdata, 0, (int)fontStream.Length);
-            fontStream.Close();
-            unsafe
-            {
-                fixed (byte* pFontData = fontdata)
-                {
-                    pfc.AddMemoryFont((System.IntPtr)pFontData, fontdata.Length);
-                }
-            }
-        }*/
-
         /// <summary>
         /// Get amount overlap duration
         /// </summary>
@@ -86,6 +66,30 @@ namespace PWinformLib
                 dataTable.Rows.Add(properties.Select(p => p.GetValue(entity)).ToArray());
 
             return dataTable;
+        }
+
+        /// <summary>
+        /// Get String Height
+        /// </summary>
+        /// <param name="Text">Checked Text Value.</param>
+        /// <param name="Width">Width of control</param>
+        /// <returns>Returns Text Height.</returns>
+        public static float getTextHeight(String Text, int Width,Font font)
+        {
+            /*SizeF stringSize = new SizeF();
+            PictureBox pictureBox1 = new PictureBox();
+            pictureBox1.Paint += new System.Windows.Forms.PaintEventHandler(pictureBox1_Paint);
+            void pictureBox1_Paint(object sender, PaintEventArgs e)
+            {
+                stringSize = e.Graphics.MeasureString(Text, font,Width);
+            }
+            pictureBox1.DrawToBitmap();
+            return stringSize.Height;*/
+            Bitmap b = new Bitmap(1000, 1000);
+            Graphics g = Graphics.FromImage(b);
+            SizeF sizeOfString = new SizeF();
+            sizeOfString = g.MeasureString(Text, font,Width);
+            return sizeOfString.Height;
         }
 
         /// <summary>
@@ -335,10 +339,6 @@ namespace PWinformLib
             return hasil;
         }
 
-        public static void tampil()
-        {
-            MessageBox.Show(parameter.Db);
-        }
 
         /// <summary>
         /// Mencek nama kolom error pada dataset.

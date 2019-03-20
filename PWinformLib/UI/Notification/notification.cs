@@ -1,104 +1,179 @@
 ﻿using System;
+using System.Collections;
 using System.Drawing;
 
 namespace PWinformLib.UI
 {
     public class notification
     {
+        static ArrayList listMsg = new ArrayList();
         static PopupNotifier[] soc = InitializeArray<PopupNotifier>(5);
         static int i = 1;
-        static int[] ii = new int[5] { 0, 0, 0, 0, 0 };
-
-        /*public notification(int Delay)
-        {
-
-        }*/
+        static int[] ii = new int[5] { 1, 0, 0, 0, 0 };
 
         public static void Info(String Title, String Message)
         {
             i = cek();
-            soc[i].TitleText = Title;
-            soc[i].ContentText = Message;
-            soc[i].AnimationInterval = 10;
-            soc[i].ShowOptionsButton = false;
-            soc[i].ShowGrip = false;
-            soc[i].ObjectNumber = i;
-            soc[i].BodyColor = Color.PowderBlue;
-            soc[i].HeaderColor = Color.PowderBlue;
-            soc[i].Image = Properties.Resources.info;
-            soc[i].ImageSize = new Size(75, 75);
-            soc[i].Popup();
-            initNotif();
+            Console.Out.WriteLine(i);
+            if (i < 4 && i != 0)
+            {
+                CustomFont.Add("Helve", Properties.Resources.HelveticaNeueLight);
+                soc[i] = new PopupNotifier()
+                {
+                    TitleText = Title,
+                    ContentText = Message,
+                    AnimationInterval = 10,
+                    ShowOptionsButton = false,
+                    ShowGrip = false,
+                    ObjectNumber = i,
+                    BodyColor = Color.FromArgb(24, 131, 233),
+                    HeaderColor = Color.FromArgb(24, 131, 233),
+                    Image = Properties.Resources.info,
+                    LastPos = (i > 0) ? soc[i - 1].LastPos : 0,
+                    ImageSize = new Size(40, 40)
+                };
+                soc[i].Popup();
+                initNotif();
+            }
+            else
+            {
+                AntriPesan("Info", Title, Message);
+            }
         }
 
         public static void Error(String Title, String Message)
         {
             i = cek();
-            soc[i].TitleText = Title;
-            soc[i].ContentText = Message;
-            soc[i].AnimationInterval = 10;
-            soc[i].ShowOptionsButton = false;
-            soc[i].ShowGrip = false;
-            soc[i].ObjectNumber = i;
-            soc[i].BodyColor = Color.MistyRose;
-            soc[i].HeaderColor = Color.MistyRose;
-            soc[i].Image = Properties.Resources.error;
-            soc[i].ImageSize = new Size(75, 75);
-            soc[i].Popup();
-            initNotif();
+            Console.Out.WriteLine(i);
+            if (i < 4 && i != 0)
+            {
+                CustomFont.Add("Helve", Properties.Resources.HelveticaNeueLight);
+                soc[i] = new PopupNotifier()
+                {
+                    TitleText = Title,
+                    ContentText = Message,
+                    ContentFont = CustomFont.GetFont("Helve", 10, FontStyle.Regular),
+                    TitleFont = CustomFont.GetFont("Helve", 12, FontStyle.Regular),
+                    AnimationInterval = 10,
+                    ShowOptionsButton = false,
+                    ShowGrip = false,
+                    ObjectNumber = i,
+                    BodyColor = Color.FromArgb(218, 37, 28),
+                    HeaderColor = Color.FromArgb(218, 37, 28),
+                    Image = Properties.Resources.error,
+                    LastPos = (i > 0) ? soc[i - 1].LastPos : 0,
+                    ImageSize = new Size(40, 40)
+                };
+                soc[i].Popup();
+                initNotif();
+            }
+            else
+            {
+                AntriPesan("Error", Title, Message);
+            }
         }
 
         public static void Ok(String Title, String Message)
         {
+
             i = cek();
-            soc[i].TitleText = Title;
-            soc[i].ContentText = Message;
-            soc[i].AnimationInterval = 10;
-            soc[i].ShowOptionsButton = false;
-            soc[i].ShowGrip = false;
-            soc[i].ObjectNumber = i;
-            soc[i].BodyColor = Color.LightCyan;
-            soc[i].HeaderColor = Color.LightCyan;
-            soc[i].Image = Properties.Resources.ok;
-            soc[i].ImageSize = new Size(75, 75);
-            soc[i].Popup();
-            initNotif();
+            Console.Out.WriteLine(i);
+            if (i < 4 && i != 0)
+            {
+                CustomFont.Add("Helve", Properties.Resources.HelveticaNeueLight);
+                soc[i] = new PopupNotifier()
+                {
+                    TitleText = Title,
+                    ContentText = Message,
+                    ContentFont = CustomFont.GetFont("Helve", 10, FontStyle.Regular),
+                    TitleFont = CustomFont.GetFont("Helve", 12, FontStyle.Regular),
+                    AnimationInterval = 10,
+                    ShowOptionsButton = false,
+                    ShowGrip = false,
+                    ObjectNumber = i,
+                    BodyColor = Color.FromArgb(2, 163, 56),
+                    HeaderColor = Color.FromArgb(2, 163, 56),
+                    Image = Properties.Resources.ok,
+                    LastPos = (i > 0) ? soc[i - 1].LastPos : 0,
+                    ImageSize = new Size(40, 40)
+                };
+                soc[i].Popup();
+                initNotif();
+            }
+            else
+            {
+                AntriPesan("Ok", Title, Message);
+            }
         }
 
         public static void Warn(String Title, String Message)
         {
             i = cek();
-            soc[i].TitleText = Title;
-            soc[i].ContentText = Message;
-            soc[i].AnimationInterval = 10;
-            soc[i].ShowOptionsButton = false;
-            soc[i].ShowGrip = false;
-            soc[i].ObjectNumber = i;
-            soc[i].BodyColor = Color.LemonChiffon;
-            soc[i].HeaderColor = Color.LemonChiffon;
-            soc[i].Image = Properties.Resources.warning;
-            soc[i].ImageSize = new Size(75, 75);
-            soc[i].Popup();
-            initNotif();
+            Console.Out.WriteLine(i);
+            if (i < 4 && i != 0)
+            {
+                CustomFont.Add("Helve", Properties.Resources.HelveticaNeueLight);
+                soc[i] = new PopupNotifier()
+                {
+                    TitleText = Title,
+                    ContentText = Message,
+                    AnimationInterval = 10,
+                    ShowOptionsButton = false,
+                    ShowGrip = false,
+                    ObjectNumber = i,
+                    BodyColor = Color.FromArgb(244, 101, 36),
+                    HeaderColor = Color.FromArgb(244, 101, 36),
+                    Image = Properties.Resources.warning,
+                    LastPos = (i > 0) ? soc[i - 1].LastPos : 0,
+                    ImageSize = new Size(40, 40)
+                };
+                soc[i].Popup();
+                initNotif();
+            }
+            else
+            {
+                AntriPesan("Warn", Title, Message);
+            }
         }
 
         private static void initNotif()
         {
-            if (i == 1) soc[i].Disappear += new EventHandler((sender, e) => hapusarray(sender, e, 1));
-            if (i == 2) soc[i].Disappear += new EventHandler((sender, e) => hapusarray(sender, e, 2));
-            if (i == 3) soc[i].Disappear += new EventHandler((sender, e) => hapusarray(sender, e, 3));
-            if (i == 4) soc[i].Disappear += new EventHandler((sender, e) => hapusarray(sender, e, 4));
-            if (i == 5) soc[i].Disappear += new EventHandler((sender, e) => hapusarray(sender, e, 5));
+            soc[i].Disappear += new EventHandler((sender, e) => hapusarray(sender, e));
         }
 
-        private static void hapusarray(object sender, EventArgs e, int indeks)
+        private static void hapusarray(object sender, EventArgs e)
         {
+            int indeks = ((PopupNotifier)sender).ObjectNumber;
+            soc[indeks].Dispose();
+            Console.Out.WriteLine(((PopupNotifier)sender).ObjectNumber);
             ii[indeks] = 0;
+            if (listMsg.Count > 0)
+            {
+                pesan nilai = (pesan)listMsg[0];
+                if (nilai.jenis.Equals("Error"))
+                    Error(nilai.judul, nilai.isi);
+                if (nilai.jenis.Equals("Ok"))
+                    Ok(nilai.judul, nilai.isi);
+                if (nilai.jenis.Equals("Warn"))
+                    Warn(nilai.judul, nilai.isi);
+                if (nilai.jenis.Equals("Info"))
+                    Info(nilai.judul, nilai.isi);
+                listMsg.RemoveAt(0);
+            }
+        }
+
+        private static void AntriPesan(String jenis, String Title, String Message)
+        {
+            pesan msgPesan = new pesan();
+            msgPesan.jenis = jenis;
+            msgPesan.judul = Title;
+            msgPesan.isi = Message;
+            listMsg.Add(msgPesan);
         }
 
         private static int cek()
         {
-            int xx = 1;
+            int xx = 0;
             for (int x = 1; x < 5; x++)
             {
                 if (ii[x] == 0)
@@ -107,7 +182,6 @@ namespace PWinformLib.UI
                     ii[x] = 1;
                     break;
                 }
-                System.Diagnostics.Debug.WriteLine(x + " x " + xx);
             }
             return xx;
         }
@@ -121,6 +195,13 @@ namespace PWinformLib.UI
             }
 
             return array;
+        }
+
+        class pesan
+        {
+            public String jenis { get; set; }
+            public String judul { get; set; }
+            public String isi { get; set; }
         }
     }
 }

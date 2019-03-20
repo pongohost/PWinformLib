@@ -9,9 +9,10 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>PWinformLib</RootNamespace>
     <AssemblyName>PWinformLib</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -31,12 +32,25 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Google.Protobuf, Version=3.5.1.0, Culture=neutral, PublicKeyToken=a7d26565bac4d604, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Protobuf.3.5.1\lib\net45\Google.Protobuf.dll</HintPath>
+    </Reference>
+    <Reference Include="MySql.Data, Version=8.0.15.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <HintPath>..\packages\MySql.Data.8.0.15\lib\net452\MySql.Data.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Configuration.Install" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Drawing.Design" />
+    <Reference Include="System.Management" />
+    <Reference Include="System.Transactions" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -46,16 +60,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="dgv\DataGridViewCellExHelper.cs" />
-    <Compile Include="dgv\DataGridViewHelper.cs" />
-    <Compile Include="dgv\DataGridViewImageCellEx.cs" />
-    <Compile Include="dgv\DataGridViewTextBoxCellEx.cs" />
-    <Compile Include="dgv\ISpannedCell.cs" />
+    <Compile Include="DB\MySQL.cs" />
+    <Compile Include="MemoryManagement.cs" />
+    <Compile Include="UI\CustomFont.cs" />
+    <Compile Include="UI\dgv\DataGridViewCellExHelper.cs" />
+    <Compile Include="UI\dgv\DataGridViewHelper.cs" />
+    <Compile Include="UI\dgv\DataGridViewImageCellEx.cs" />
+    <Compile Include="UI\dgv\DataGridViewTextBoxCellEx.cs" />
+    <Compile Include="UI\dgv\ISpannedCell.cs" />
     <Compile Include="ExcelHelperInterop.cs" />
     <Compile Include="Helper.cs" />
     <Compile Include="HelperDGDTDS.cs" />
     <Compile Include="DB\MsSQL.cs" />
-    <Compile Include="DB\parameter.cs" />
     <Compile Include="EncryptHelp.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -92,24 +108,21 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Notification\PopupNotifierForm.resx">
+      <DependentUpon>PopupNotifierForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Preloader\PreloaderCtrl.resx">
       <DependentUpon>PreloaderCtrl.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\error.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\info.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\ok.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\warning.png" />
+    <None Include="Resources\HelveticaNeueLight.ttf" />
+    <None Include="Resources\Lato-Black.ttf" />
+    <None Include="Resources\Lato-Bold.ttf" />
+    <None Include="Resources\Lato-Light.ttf" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\excel.png" />
@@ -148,6 +161,18 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Grip.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\error.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\info.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ok.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\warning.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
