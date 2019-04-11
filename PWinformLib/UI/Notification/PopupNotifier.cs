@@ -21,7 +21,7 @@ namespace PWinformLib
     /// </summary>
     [ToolboxBitmapAttribute(typeof(PopupNotifier), "Icon.ico")]
     [DefaultEvent("Click")]
-    public class PopupNotifier : Component
+    class PopupNotifier : Component
     {
         /// <summary>
         /// Event that is raised when the text in the notification window is clicked.

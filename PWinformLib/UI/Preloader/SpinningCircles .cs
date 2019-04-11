@@ -7,7 +7,7 @@ using System.Windows.Forms;
 
 namespace PWinformLib.Preloader
 {
-    public class SpinningCircles : Control
+    class SpinningCircles : Control
     {
         int increment = 1;
         int radius = 4;

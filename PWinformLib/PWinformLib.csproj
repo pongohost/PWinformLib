@@ -61,8 +61,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DB\MySQL.cs" />
+    <Compile Include="Extensions.cs" />
     <Compile Include="MemoryManagement.cs" />
     <Compile Include="UI\CustomFont.cs" />
+    <Compile Include="UI\dgv\DataGridViewCalendarCell.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="UI\dgv\DataGridViewCellExHelper.cs" />
     <Compile Include="UI\dgv\DataGridViewHelper.cs" />
     <Compile Include="UI\dgv\DataGridViewImageCellEx.cs" />
@@ -77,6 +81,37 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="UI\OldPTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="UI\OldPTextBox.Designer.cs">
+      <DependentUpon>OldPTextBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\PDataGridView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\PDataGridView.Designer.cs">
+      <DependentUpon>PDataGridView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\PDialog.cs" />
+    <Compile Include="UI\PDialogUI.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\PDialogUI.Designer.cs">
+      <DependentUpon>PDialogUI.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\PFlatButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="UI\PFlatButton.Designer.cs">
+      <DependentUpon>PFlatButton.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Preloader\PreloaderHolder.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="UI\Preloader\PreloaderHolder.Designer.cs">
+      <DependentUpon>PreloaderHolder.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\PTextBox.cs">
       <SubType>Component</SubType>
@@ -102,6 +137,8 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UI\RoundedBorder.cs" />
+    <Compile Include="UI\Transparenter.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -114,8 +151,17 @@
     <EmbeddedResource Include="UI\Notification\PopupNotifierForm.resx">
       <DependentUpon>PopupNotifierForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="UI\PDataGridView.resx">
+      <DependentUpon>PDataGridView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\PDialogUI.resx">
+      <DependentUpon>PDialogUI.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UI\Preloader\PreloaderCtrl.resx">
       <DependentUpon>PreloaderCtrl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Preloader\PreloaderHolder.resx">
+      <DependentUpon>PreloaderHolder.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
@@ -157,9 +203,6 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Preloader_3.gif" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Resources\Grip.png" />
   </ItemGroup>
   <ItemGroup>
@@ -173,6 +216,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\warning.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Preloader_3.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\full-wave.gif" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

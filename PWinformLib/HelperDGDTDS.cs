@@ -4,6 +4,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using System.Windows.Forms;
 using Newtonsoft.Json;
 
@@ -80,6 +81,7 @@ namespace PWinformLib
             }
             return dt;
         }
+
         //convert var to datatable
         //DataTable dtttt = VarToDataTable(detailProdLinq.ToList());
         public static DataTable VarToDataTable<T>(List<T> items)
@@ -106,6 +108,7 @@ namespace PWinformLib
 
             return tb;
         }
+
         //merubah dari json ke datatable
         public static DataTable JsonToDataTable(String json)
         {
@@ -130,6 +133,7 @@ namespace PWinformLib
             }
             return hasil;
         }
+
         //membersihkan datagrid
         public static void clearDatagrid(DataGridView dgv)
         {
@@ -156,7 +160,25 @@ namespace PWinformLib
             }
             //TableAdapter.Update(dt);
         }
-
+        //
+        public static void AddDatePickerDGV(object sender, DataGridViewCellEventArgs e,int ColPos)
+        {
+            DataGridView dgv = (DataGridView)sender;
+            if (e.ColumnIndex == ColPos)
+            {
+                DateTimePicker dtp = new DateTimePicker();
+                dgv.Controls.Add(dtp);
+                Rectangle tempRect = dgv.GetCellDisplayRectangle(e.ColumnIndex, e.RowIndex, false);
+                dtp.Location = tempRect.Location;
+                dtp.Width = tempRect.Width;
+                dtp.CloseUp += (o, args) => { dtp.Visible = false; };
+                dtp.TextChanged += (o, args) => { dgv.CurrentCell.Value = dtp.Text.ToString(); };
+                dtp.Visible = true;
+                /*Thread.Sleep(500);
+                dgv[e.ColumnIndex,e.RowIndex].Open();*/
+                //dgv[e.ColumnIndex,e.RowIndex].
+            }
+        }
         //Set combobox value from dgv
         public static void setComboDgv(DataGridViewColumn dgvC, DataTable dt)
         {
@@ -217,6 +239,13 @@ namespace PWinformLib
                     isi = dgv[kolom, i].Value.ToString();
                 }
             }
+        }
+
+        public static void MergeRowTextboxColumnEx(DataGridView dgv,int colNumber, int firstRow, int length, DataGridViewContentAlignment alignment = DataGridViewContentAlignment.MiddleCenter)
+        {
+
+            ((DataGridViewTextBoxCellEx)dgv[colNumber, firstRow]).RowSpan = length;
+            ((DataGridViewTextBoxCellEx)dgv[colNumber, firstRow]).Style.Alignment = alignment;
         }
 
         //List<String> groupNameList = bantu.getUniqueValuefromDgv(dgv, "dir_operator");

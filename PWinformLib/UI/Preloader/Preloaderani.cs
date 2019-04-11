@@ -2,19 +2,53 @@
 using System.Drawing;
 using System.Windows.Forms;
 using System;
+using PWinformLib.Properties;
+using PWinformLib.UI.Preloader;
 
 namespace PWinformLib.Preloader
 {
     public class Preloaderani
     {
-        public static void addSpinnLoad(Control pnl,String text="")
+        public static void addSpinnLoad(Control pnl,string tipe= "BoxSwap",int width=77,int height=77,Image imageRes=null,String text="")
         {
-            SpinningCircles spinningCircles = new SpinningCircles();
-            spinningCircles.randColor = true;
-            spinningCircles.Location = new Point(pnl.Width / 2 - 50, pnl.Height / 2 - 50);
-            spinningCircles.Visible = true;
-            pnl.Controls.Add(spinningCircles);
-            spinningCircles.BringToFront();
+            if(tipe.Equals("SpinCircle"))
+            {
+                SpinningCircles spinningCircles = new SpinningCircles();
+                spinningCircles.randColor = true;
+                spinningCircles.Location = new Point(pnl.Width / 2 - 50, pnl.Height / 2 - 50);
+                spinningCircles.Visible = true;
+                pnl.Controls.Add(spinningCircles);
+                spinningCircles.BringToFront();
+            }
+            /*else if(tipe.Contains("full-"))
+            {
+                PreloaderHolder itm = new PreloaderHolder();
+                if (tipe.Contains("wave"))
+                {
+                    //                    itm.Image = Helper.ChangeOpacity(Resources.full_wave,0.5f);
+                    itm.Image = Resources.full_wave;
+                }
+                itm.SizeMode = PictureBoxSizeMode.StretchImage;
+                itm.Size = new Size(pnl.Width, pnl.Height);
+                itm.Location = new Point(0, 0);
+                itm.Visible = true;
+                itm.BackColor = Color.Transparent;
+                pnl.Controls.Add(itm);
+                itm.BringToFront();
+            }*/
+            else 
+            {
+                PictureBox itm = new PictureBox();
+                if(tipe.Equals("BoxSwap"))
+                    itm.Image = Resources.Preloader_Ani;
+                itm.SizeMode = PictureBoxSizeMode.StretchImage;
+                itm.Size = new Size(width,height);
+                itm.Location = new Point(pnl.Width / 2 - 50, pnl.Height / 2 - 50);
+                itm.Visible = true;
+                itm.BackColor = Color.Transparent;
+                pnl.Controls.Add(itm);
+                itm.BringToFront();
+            }
             if (text.Length > 0)
             {
                 Graphics graphics = pnl.CreateGraphics();
@@ -59,6 +93,13 @@ namespace PWinformLib.Preloader
                     SpinningCircles tdr = ((SpinningCircles)control);
                     pnl.Controls.Remove(tdr);
                     tdr.Dispose();
+                }
+
+                if (control is PictureBox)
+                {
+                    PictureBox itm = (PictureBox) control;
+                    pnl.Controls.Remove(itm);
+                    itm.Dispose();
                 }
                 if (control is Label)
                 {

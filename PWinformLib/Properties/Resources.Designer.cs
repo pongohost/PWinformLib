@@ -83,6 +83,16 @@ namespace PWinformLib.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap full_wave {
+            get {
+                object obj = ResourceManager.GetObject("full_wave", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap Grip {
             get {
                 object obj = ResourceManager.GetObject("Grip", resourceCulture);

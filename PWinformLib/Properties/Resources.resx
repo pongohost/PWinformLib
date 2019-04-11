@@ -124,9 +124,6 @@
   <data name="Grip" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Grip.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="Preloader_Ani" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Preloader_3.gif;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="Lato_Light" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Lato-Light.ttf;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
@@ -150,5 +147,11 @@
   </data>
   <data name="HelveticaNeueLight" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\HelveticaNeueLight.ttf;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="Preloader_Ani" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Preloader_3.gif;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="full_wave" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\full-wave.gif;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>
