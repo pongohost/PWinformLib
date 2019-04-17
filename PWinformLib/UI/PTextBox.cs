@@ -107,6 +107,7 @@ namespace PWinformLib
 
         private void resizeTextBox()
         {
+            //box.BackColor = Color.Aqua;
             const int padding = 5;
             int numLines = box.GetLineFromCharIndex(box.TextLength) + 1;
             int border = box.Height - box.ClientSize.Height;
@@ -121,21 +122,21 @@ namespace PWinformLib
                 box.Height = heightBox;
                 box.ScrollBars = ScrollBars.None;
             }
-            box.Width = Width - (int)(_radius * 1.5)-4;
+            box.Width = Width - (int)(_radius * 2);
             int y = 0;
             if (_textAlign.ToString().Contains("Top"))
-                y = _radius / 2 + 2;
+                y = 2;
             if (_textAlign.ToString().Contains("Mid"))
-                y = (Height - box.Height) / 2 + 2;
+                y = (Height - box.Height) / 2;
             if (_textAlign.ToString().Contains("Bottom"))
-                y = (Height - box.Height) - _radius / 2 + 2;
+                y = (Height - box.Height) - 2 /*- _radius / 2+2*/;
             if (_textAlign.ToString().Contains("Left"))
                 box.TextAlign = HorizontalAlignment.Left;
             if (_textAlign.ToString().Contains("Center"))
                 box.TextAlign = HorizontalAlignment.Center;
             if (_textAlign.ToString().Contains("Right"))
                 box.TextAlign = HorizontalAlignment.Right;
-            box.Location = new Point(_radius / 2 + 2, y);
+            box.Location = new Point(_radius, y);
         }
         
         void box_KeyDown(object sender, KeyEventArgs e)
@@ -188,8 +189,14 @@ namespace PWinformLib
             "System.Drawing.Design.UITypeEditor")]
         public override string Text
         {
-            get { return box.Text;}
-            set {
+            get
+            {
+                if (!box.Text.Equals(_watermark))
+                    return box.Text;
+                return "";
+            }
+            set
+            {
                 box.Text = value;
                 Invalidate();
             }

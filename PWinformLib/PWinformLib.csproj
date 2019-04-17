@@ -60,6 +60,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ControlExtension.cs" />
     <Compile Include="DB\MySQL.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="MemoryManagement.cs" />
@@ -101,11 +102,29 @@
     <Compile Include="UI\PDialogUI.Designer.cs">
       <DependentUpon>PDialogUI.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\PDragVertical.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\PDragVertical.Designer.cs">
+      <DependentUpon>PDragVertical.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\PDragHorizontal.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\PDragHorizontal.Designer.cs">
+      <DependentUpon>PDragHorizontal.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\PFlatButton.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="UI\PFlatButton.Designer.cs">
       <DependentUpon>PFlatButton.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\PGroupBox.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\PGroupBox.Designer.cs">
+      <DependentUpon>PGroupBox.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\Preloader\PreloaderHolder.cs">
       <SubType>Component</SubType>
@@ -156,6 +175,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\PDialogUI.resx">
       <DependentUpon>PDialogUI.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\PDragVertical.resx">
+      <DependentUpon>PDragVertical.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\PDragHorizontal.resx">
+      <DependentUpon>PDragHorizontal.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\PGroupBox.resx">
+      <DependentUpon>PGroupBox.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Preloader\PreloaderCtrl.resx">
       <DependentUpon>PreloaderCtrl.cs</DependentUpon>
@@ -222,6 +250,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\full-wave.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\barHorizontal.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\barVertical.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

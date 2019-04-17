@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Threading;
 using System.Windows.Forms;
 using Newtonsoft.Json;
+using PWinformLib.Preloader;
 
 namespace PWinformLib
 {
@@ -46,9 +47,9 @@ namespace PWinformLib
                     dgv = cmx.SourceControl as DataGridView;
                 if (mI.Text.Equals("Export Data"))
                 {
-                    Helper.addSpinnLoad(dgv);
+                    Preloaderani.addSpinnLoad(dgv);
                     ExcelHelperInterop.DgvtoExcel(dgv);
-                    Helper.remSpinnLoad(dgv);
+                    Preloaderani.addSpinnLoad(dgv);
                 }
             }
         }

@@ -48,7 +48,21 @@ namespace PWinformLib
             return result;
         }
 
-
+        /// <summary>
+        /// Get amount overlap duration
+        /// </summary>
+        /// <param name="firstStartTime">First Start Time.</param>
+        /// <param name="firstEndTime">First End Time.</param>
+        /// <param name="secondStarTime">Second Start Time.</param>
+        /// <param name="secondEndTime">Second End Time.</param>
+        /// <param name="unit">Return unit (D,h,m,s,n).</param>
+        /// <returns>Returns overlap value in unit.</returns>
+        public static void SetDpLastDayMonthByDp(DateTimePicker srcDateTimePicker, DateTimePicker refDateTimePicker)
+        {
+            refDateTimePicker.Value = new DateTime(srcDateTimePicker.Value.Year,
+                srcDateTimePicker.Value.Month,
+                DateTime.DaysInMonth(srcDateTimePicker.Value.Year, srcDateTimePicker.Value.Month));
+        }
         /// <summary>
         /// Convert Object To DataTable
         /// </summary>
@@ -104,6 +118,27 @@ namespace PWinformLib
         {
             if (checkedTime >= startTime && checkedTime <= endTime) return true;
             return false;
+        }
+
+        /// <summary>
+        /// Draw Border around control
+        /// </summary>
+        /// <param name="e">PaintEventArgs.</param>
+        /// <param name="ctrl">Target Control.</param>
+        /// <param name="color">Border color.</param>
+        /// <param name="borderSize">Border Size.</param>
+        /// <param name="borderStyle">Border Style.</param>
+        /// <returns>none.</returns>
+        public static void DrawBorder(PaintEventArgs e,Control ctrl, 
+            Color? color=null,int borderSize =1,
+            ButtonBorderStyle borderStyle = ButtonBorderStyle.Solid)
+        {
+            Color color2 = color.GetValueOrDefault(Color.Black);
+            ControlPaint.DrawBorder(e.Graphics, ctrl.ClientRectangle,
+                color2, borderSize, borderStyle,
+                color2, borderSize, borderStyle,
+                color2, borderSize, borderStyle,
+                color2, borderSize, borderStyle);
         }
 
         public static bool addSingleEmptyArray(String[] arr, String nilai, String judul, String pesan)
@@ -378,7 +413,7 @@ namespace PWinformLib
         /// Menambah Preloader yang di pasang pada komponen.
         /// </summary>
         /// <param name="pnl">Nama panel yang d attach.</param>
-        public static void addSpinnLoad(Control pnl)
+        /*public static void addSpinnLoad(Control pnl)
         {
             SpinningCircles spinningCircles = new SpinningCircles();
             spinningCircles.randColor = true;
@@ -386,13 +421,13 @@ namespace PWinformLib
             spinningCircles.Visible = true;
             pnl.Controls.Add(spinningCircles);
             spinningCircles.BringToFront();
-        }
+        }*/
 
         /// <summary>
         /// Menghapus Preloader yang di pasang pada komponen.
         /// </summary>
         /// <param name="pnl">Nama panel yang d attach.</param>
-        public static void remSpinnLoad(Control pnl)
+        /*public static void remSpinnLoad(Control pnl)
         {
             var controlLst = GetAllControl(pnl).ToList();
             foreach (var control in controlLst)
@@ -404,7 +439,7 @@ namespace PWinformLib
                     tdr.Dispose();
                 }
             }
-        }
+        }*/
 
         /// <summary>
         /// Mengcopy file image ke clipboard.

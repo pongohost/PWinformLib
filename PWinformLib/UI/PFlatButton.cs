@@ -155,10 +155,7 @@ namespace PWinformLib.UI
             base.OnMouseDoubleClick(e);
             base.OnClick(e);
         }
-        protected override void OnClick(EventArgs e)
-        {
-            base.OnClick(e);
-        }
+        
         protected override void OnEnabledChanged(EventArgs e)
         {
             Invalidate();

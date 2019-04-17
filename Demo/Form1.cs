@@ -47,5 +47,31 @@ namespace Demo
         {
             MessageBox.Show("klik1");
         }
+
+        private void Form1_Shown(object sender, EventArgs e)
+        {
+            //splitContainer1.BackgroundImage = Resources.Grip;
+
+        }
+        
+        private void panel2_Paint(object sender, PaintEventArgs e)
+        {
+            Helper.DrawBorder(e,(Control)sender,Color.Aqua,5,ButtonBorderStyle.Dashed);
+        }
+
+        private void pTextBox1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void pFlatButton1_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show(pTextBox1.Text);
+        }
+
+        private void panel1_Paint(object sender, PaintEventArgs e)
+        {
+            Helper.DrawBorder(e, (Control)sender, Color.Red, 2, ButtonBorderStyle.Dashed);
+        }
     }
 }
