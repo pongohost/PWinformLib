@@ -10,8 +10,8 @@ namespace PWinformLib.UI
         private bool dragable = false;
         private Size mouseOffset;
         Control ThisControl;
-        public string BottomControl { get; set; }
-        public string TopControl { get; set; }
+        public string PBottomControl { get; set; }
+        public string PTopControl { get; set; }
 
         public PDragVertical()
         {
@@ -29,7 +29,7 @@ namespace PWinformLib.UI
         
         private Control getControl(string ctrlName)
         {
-            foreach (Control ctrl in ParentForm.Controls)
+            foreach (Control ctrl in Parent.Controls)
             {
                 if (ctrl.Name.Equals(ctrlName))
                     return ctrl;
@@ -66,18 +66,24 @@ namespace PWinformLib.UI
                 Point newLocationOffset = e.Location - mouseOffset;
                 ThisControl.Top += newLocationOffset.Y;
                 //ThisControl.Left += newLocationOffset.X;
-                if (BottomControl != null)
+                if (PBottomControl != null)
                 {
-                    Control bCtrl = getControl(BottomControl);
-                    bCtrl.Top += newLocationOffset.Y;
-                    bCtrl.Height -= newLocationOffset.Y;
-                    bCtrl.Invalidate();
+                    Control bCtrl = getControl(PBottomControl);
+                    if(bCtrl!=null)
+                    {
+                        bCtrl.Top += newLocationOffset.Y;
+                        bCtrl.Height -= newLocationOffset.Y;
+                        bCtrl.Invalidate();
+                    }
                 }
-                if (TopControl != null)
+                if (PTopControl != null)
                 {
-                    Control tCtrl = getControl(TopControl);
-                    tCtrl.Height += newLocationOffset.Y;
-                    tCtrl.Invalidate();
+                    Control tCtrl = getControl(PTopControl);
+                    if(tCtrl!=null)
+                    {
+                        tCtrl.Height += newLocationOffset.Y;
+                        tCtrl.Invalidate();
+                    }
                 }
             }
         }

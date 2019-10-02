@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title>$title$</title>
+    <authors>Pongohost</authors>
+    <owners>$author$</owners>
+    <projectUrl>https://github.com/pongohost/PWinformLib</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Compilation helper for Winform</description>
+    <releaseNotes>use at your own risk</releaseNotes>
+    <copyright>Copyright 2019</copyright>
+    <tags>Winform Helper Tool Library</tags>
+  </metadata>
+</package>

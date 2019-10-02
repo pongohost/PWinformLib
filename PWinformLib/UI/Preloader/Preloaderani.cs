@@ -9,7 +9,7 @@ namespace PWinformLib.Preloader
 {
     public class Preloaderani
     {
-        public static void addSpinnLoad(Control pnl,string tipe= "BoxSwap",int width=77,int height=77,Image imageRes=null,String text="")
+        public static void addSpinnLoad(Control pnl, String text = "", string tipe= "BoxSwap",int width=77,int height=77,Image imageRes=null)
         {
             if(tipe.Equals("SpinCircle"))
             {
@@ -43,7 +43,7 @@ namespace PWinformLib.Preloader
                     itm.Image = Resources.Preloader_Ani;
                 itm.SizeMode = PictureBoxSizeMode.StretchImage;
                 itm.Size = new Size(width,height);
-                itm.Location = new Point(pnl.Width / 2 - 50, pnl.Height / 2 - 50);
+                itm.Location = new Point(pnl.Width / 2 - width/2, pnl.Height / 2 - height/2);
                 itm.Visible = true;
                 itm.BackColor = Color.Transparent;
                 pnl.Controls.Add(itm);
@@ -58,14 +58,15 @@ namespace PWinformLib.Preloader
                     Name = "preloader_lbl",
                     BackColor = Color.FromArgb(158,210,102),
                     ForeColor = Color.Black,
-                    //Font = new Font("Verdana", 11.25F, (FontStyle.Bold | FontStyle.Italic), GraphicsUnit.Point, 0),
+                    Font = new Font("Verdana", 11.25F, (FontStyle.Regular | FontStyle.Italic), GraphicsUnit.Point, 0),
                     Padding = new Padding(5),
                     TextAlign = ContentAlignment.MiddleCenter,
                     Text = text
                 };
                 Size size = TextRenderer.MeasureText(txt.Text, txt.Font);
+                Console.Out.WriteLine($"{(size.Width / graphics.DpiX) * 72} - {txt.Width} | {size.Height} - {txt.Height}");
                 int lebar = Convert.ToInt32((size.Width /graphics.DpiX) * 72);
-                txt.Location = new Point(pnl.Width / 2 - lebar, pnl.Height / 2 + 60);
+                txt.Location = new Point(pnl.Width / 2 - size.Width / 2-5, pnl.Height / 2 + width/2);
                 pnl.Controls.Add(txt);
             }
         }

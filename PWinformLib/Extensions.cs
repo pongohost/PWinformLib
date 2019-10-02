@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -32,5 +33,17 @@ namespace PWinformLib
             int lParam = width + height * 0x00010000; // VooDoo to shift height
             PostMessage(obj.DataGridView.Handle, WM_LBUTTONDOWN, 1, lParam);
         }*/
+
+        public static void InvokeEx<T>(this T @this, Action<T> action) where T : ISynchronizeInvoke
+        {
+            if (@this.InvokeRequired)
+            {
+                @this.Invoke(action, new object[] { @this });
+            }
+            else
+            {
+                action(@this);
+            }
+        }
     }
 }

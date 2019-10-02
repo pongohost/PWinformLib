@@ -230,6 +230,11 @@ namespace PWinformLib
 
                     }
                 }
+                /*catch
+                {
+                    sqlcon.Close();
+                    throw;
+                }*/
                 catch (SqlException ex) // This will catch all SQL exceptions
                 {
                     Console.WriteLine("SQL exception issue: " + ex.Message);

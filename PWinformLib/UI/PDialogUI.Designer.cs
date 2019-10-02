@@ -77,38 +77,38 @@
             // txt_input
             // 
             this.txt_input.BackColor = System.Drawing.Color.Transparent;
-            this.txt_input.BgColor = System.Drawing.Color.White;
-            this.txt_input.BorderColor = System.Drawing.Color.Crimson;
+            this.txt_input.PBgColor = System.Drawing.Color.White;
+            this.txt_input.PBorderColor = System.Drawing.Color.Crimson;
             this.txt_input.Font = new System.Drawing.Font("Verdana", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txt_input.ForeColor = System.Drawing.Color.DimGray;
             this.txt_input.Location = new System.Drawing.Point(10, 63);
             this.txt_input.Margin = new System.Windows.Forms.Padding(10);
             this.txt_input.Name = "txt_input";
             this.txt_input.PasswordChar = '\0';
-            this.txt_input.Radius = 15;
+            this.txt_input.PRadius = 15;
             this.txt_input.Size = new System.Drawing.Size(431, 38);
             this.txt_input.TabIndex = 1;
             this.txt_input.Visible = false;
-            this.txt_input.Watermark = "";
-            this.txt_input.WatermarkFont = new System.Drawing.Font("Verdana", 9.75F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txt_input.PWatermark = "";
+            this.txt_input.PWatermarkFont = new System.Drawing.Font("Verdana", 9.75F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             // 
             // btn_ok
             // 
-            this.btn_ok.Active1 = System.Drawing.Color.Lime;
-            this.btn_ok.Active2 = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.btn_ok.AutoResizeText = true;
+            this.btn_ok.PActive1 = System.Drawing.Color.Lime;
+            this.btn_ok.PActive2 = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+            this.btn_ok.PAutoResizeText = true;
             this.btn_ok.BackColor = System.Drawing.Color.Transparent;
             this.btn_ok.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.btn_ok.Font = new System.Drawing.Font("Verdana", 10F, System.Drawing.FontStyle.Bold);
             this.btn_ok.ForeColor = System.Drawing.Color.Black;
-            this.btn_ok.GradientAngle = 180F;
-            this.btn_ok.Inactive1 = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.btn_ok.Inactive2 = System.Drawing.Color.Lime;
+            this.btn_ok.PGradientAngle = 180F;
+            this.btn_ok.PInactive1 = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+            this.btn_ok.PInactive2 = System.Drawing.Color.Lime;
             this.btn_ok.Location = new System.Drawing.Point(10, 114);
             this.btn_ok.Margin = new System.Windows.Forms.Padding(10, 3, 3, 3);
-            this.btn_ok.MultiLineText = false;
+            this.btn_ok.PMultiLineText = false;
             this.btn_ok.Name = "btn_ok";
-            this.btn_ok.Radius = 10;
+            this.btn_ok.PRadius = 10;
             this.btn_ok.Size = new System.Drawing.Size(210, 55);
             this.btn_ok.Stroke = true;
             this.btn_ok.StrokeColor = System.Drawing.Color.Crimson;
@@ -118,20 +118,20 @@
             // 
             // pFlatButton2
             // 
-            this.pFlatButton2.Active1 = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
-            this.pFlatButton2.Active2 = System.Drawing.Color.Red;
-            this.pFlatButton2.AutoResizeText = true;
+            this.pFlatButton2.PActive1 = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
+            this.pFlatButton2.PActive2 = System.Drawing.Color.Red;
+            this.pFlatButton2.PAutoResizeText = true;
             this.pFlatButton2.BackColor = System.Drawing.Color.Transparent;
             this.pFlatButton2.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.pFlatButton2.Font = new System.Drawing.Font("Verdana", 10F, System.Drawing.FontStyle.Bold);
             this.pFlatButton2.ForeColor = System.Drawing.Color.Black;
-            this.pFlatButton2.GradientAngle = 180F;
-            this.pFlatButton2.Inactive1 = System.Drawing.Color.Red;
-            this.pFlatButton2.Inactive2 = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
+            this.pFlatButton2.PGradientAngle = 180F;
+            this.pFlatButton2.PInactive1 = System.Drawing.Color.Red;
+            this.pFlatButton2.PInactive2 = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
             this.pFlatButton2.Location = new System.Drawing.Point(226, 114);
-            this.pFlatButton2.MultiLineText = false;
+            this.pFlatButton2.PMultiLineText = false;
             this.pFlatButton2.Name = "pFlatButton2";
-            this.pFlatButton2.Radius = 10;
+            this.pFlatButton2.PRadius = 10;
             this.pFlatButton2.Size = new System.Drawing.Size(210, 55);
             this.pFlatButton2.Stroke = true;
             this.pFlatButton2.StrokeColor = System.Drawing.Color.Crimson;

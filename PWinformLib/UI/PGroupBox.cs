@@ -1,15 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
-using System.Data;
 using System.Drawing.Drawing2D;
-using System.Drawing.Printing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Windows.Forms.VisualStyles;
 using ContentAlignment = System.Drawing.ContentAlignment;
 
 namespace PWinformLib.UI
@@ -23,7 +15,7 @@ namespace PWinformLib.UI
         private string _text;
         private ContentAlignment _textAlignment;
         private Padding _textMargin;
-
+        
         public PGroupBox()
         {
             InitializeComponent();
@@ -34,25 +26,14 @@ namespace PWinformLib.UI
             _textAlignment = ContentAlignment.TopLeft;
         }
         
-        public Color BackColor
+        /*public Color BackColor
         {
             get { return panelBox.BackColor; }
             set { panelBox.BackColor = value;Invalidate(); }
-        }
-
-        protected override void OnResize(EventArgs e)
-        {
-            base.OnMove(e);
-        }
-
+        }*/
+        
         protected override void OnPaint(PaintEventArgs e)
         {
-            base.OnPaint(e);
-        }
-
-        private void panelBox_Paint(object sender, PaintEventArgs e)
-        {
-
             int yP = 0, xT = _radius, yT = 0;
             if (_textAlignment.ToString().Contains("Top"))
             {
@@ -62,7 +43,6 @@ namespace PWinformLib.UI
             if (_textAlignment.ToString().Contains("Mid"))
             {
                 yP = title_lbl.Height/2 + _textMargin.Bottom;
-                title_lbl.BackColor = _bgColor;
             }
 
             if (_textAlignment.ToString().Contains("Bottom"))
@@ -72,25 +52,22 @@ namespace PWinformLib.UI
 
             if (_textAlignment.ToString().Contains("Cent"))
             {
-                xT = (panelBox.Width / 2) - (title_lbl.Width / 2);
+                xT = (Width / 2) - (title_lbl.Width / 2);
             }
 
             if (_textAlignment.ToString().Contains("Right"))
             {
-                xT = panelBox.Width - title_lbl.Width - _radius;
+                xT = Width - title_lbl.Width - _radius;
             }
             title_lbl.Location = new Point(xT, yT);
-            panelBox.Location = new Point(0, yP);
-            panelBox.Width = Width;
-            panelBox.Height = Height - yP;
 
             //Helper.DrawBorder(e,(Control)sender,Color.Red,2,ButtonBorderStyle.Dashed);
-            GraphicsPath shape = new RoundedBorder(panelBox.Width, panelBox.Height, _radius).Path;
-            GraphicsPath innerRect = new RoundedBorder(panelBox.Width-0.5f, panelBox.Height-0.5f, _radius, 0.5f, 0.5f).Path;
+            GraphicsPath shape = new RoundedBorder(Width, Height, _radius,0,yP).Path;
+            GraphicsPath innerRect = new RoundedBorder(Width-0.5f, Height-0.5f, _radius, 0.5f, yP+0.5f).Path;
             //resizeTextBox();
 
             e.Graphics.SmoothingMode = SmoothingMode.HighQuality;
-            Bitmap bmp = new Bitmap(panelBox.Width, panelBox.Height);
+            Bitmap bmp = new Bitmap(Width, Height);
             Graphics grp = Graphics.FromImage(bmp);
             float[] dashValues = { 5, 2, 15, 4 };
             Pen pen = new Pen(_borderColor, 3);
@@ -99,9 +76,18 @@ namespace PWinformLib.UI
             e.Graphics.DrawPath(pen, shape);
             using (SolidBrush brush = new SolidBrush(_bgColor))
                 e.Graphics.FillPath(brush, innerRect);
-            Transparenter.MakeTransparent(panelBox, e.Graphics);
-        }
+            //Transparenter.MakeTransparent(panelBox, e.Graphics);
 
+            if (_textAlignment.ToString().Contains("Mid"))
+            {
+                yP = title_lbl.Height / 2 + _textMargin.Bottom;
+                pen = new Pen(_bgColor, 3);
+                e.Graphics.DrawLine(pen, title_lbl.Location.X - 3, yP, title_lbl.Location.X + title_lbl.Width + 3, yP);
+            }
+//            e.Graphics.DrawArc(pen,10,10,150,150,180,90);
+            base.OnPaint(e);
+        }
+        
         public DashStyle PBorderType
         {
             get { return _BorderType; }

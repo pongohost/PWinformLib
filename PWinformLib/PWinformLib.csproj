@@ -2,7 +2,7 @@
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{48B45E28-B68C-4809-9326-6CA3804E25A2}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -31,15 +31,28 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Google.Protobuf, Version=3.5.1.0, Culture=neutral, PublicKeyToken=a7d26565bac4d604, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Protobuf.3.5.1\lib\net45\Google.Protobuf.dll</HintPath>
+    <Reference Include="BouncyCastle.Crypto, Version=1.8.5.0, Culture=neutral, PublicKeyToken=0e99375e54769942">
+      <HintPath>..\packages\BouncyCastle.1.8.5\lib\BouncyCastle.Crypto.dll</HintPath>
     </Reference>
-    <Reference Include="MySql.Data, Version=8.0.15.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
-      <HintPath>..\packages\MySql.Data.8.0.15\lib\net452\MySql.Data.dll</HintPath>
+    <Reference Include="EPPlus, Version=4.5.3.2, Culture=neutral, PublicKeyToken=ea159fdaa78159a1, processorArchitecture=MSIL">
+      <HintPath>..\packages\EPPlus.4.5.3.2\lib\net40\EPPlus.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Protobuf, Version=3.9.2.0, Culture=neutral, PublicKeyToken=a7d26565bac4d604, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Protobuf.3.9.2\lib\net45\Google.Protobuf.dll</HintPath>
+    </Reference>
+    <Reference Include="MySql.Data, Version=8.0.17.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <HintPath>..\packages\MySql.Data.8.0.17\lib\net452\MySql.Data.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="Renci.SshNet, Version=2016.1.0.0, Culture=neutral, PublicKeyToken=1cee9f8bde3db106, processorArchitecture=MSIL">
+      <HintPath>..\packages\SSH.NET.2016.1.0\lib\net40\Renci.SshNet.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel" />
@@ -50,6 +63,7 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Drawing.Design" />
     <Reference Include="System.Management" />
+    <Reference Include="System.Security" />
     <Reference Include="System.Transactions" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
@@ -62,8 +76,13 @@
   <ItemGroup>
     <Compile Include="ControlExtension.cs" />
     <Compile Include="DB\MySQL.cs" />
+    <Compile Include="ExcelHelper.cs" />
     <Compile Include="Extensions.cs" />
+    <Compile Include="FormValidation.cs" />
+    <Compile Include="FPSLimiterKnownValues.cs" />
+    <Compile Include="intpkg\ifacepkg.cs" />
     <Compile Include="MemoryManagement.cs" />
+    <Compile Include="PTimer.cs" />
     <Compile Include="UI\CustomFont.cs" />
     <Compile Include="UI\dgv\DataGridViewCalendarCell.cs">
       <SubType>Component</SubType>
@@ -83,11 +102,20 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="UI\modal\Warn.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\modal\Warn.Designer.cs">
+      <DependentUpon>Warn.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\OldPTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="UI\OldPTextBox.Designer.cs">
       <DependentUpon>OldPTextBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\PAlphaTextBox.cs">
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="UI\PDataGridView.cs">
       <SubType>UserControl</SubType>
@@ -156,16 +184,33 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UI\PTextBoxAni.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="UI\PTextBoxAni.Designer.cs">
+      <DependentUpon>PTextBoxAni.cs</DependentUpon>
+    </Compile>
     <Compile Include="UI\RoundedBorder.cs" />
     <Compile Include="UI\Transparenter.cs" />
+    <Compile Include="UI\TransparentTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="UI\TransparentTextBox.Designer.cs">
+      <DependentUpon>TransparentTextBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Win32.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\modal\Warn.resx">
+      <DependentUpon>Warn.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Notification\PopupNotifierForm.resx">
       <DependentUpon>PopupNotifierForm.cs</DependentUpon>
@@ -256,6 +301,18 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\barVertical.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\error-color.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\info-color.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ok-color.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\warn-color.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

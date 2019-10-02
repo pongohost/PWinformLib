@@ -15,7 +15,13 @@ namespace PWinformLib.DB
         {
             if(sqlcon.State == ConnectionState.Open)
                 sqlcon.Close();
-            sqlcon.ConnectionString = $@"Server={servername};Port={port};Database={dbname};Uid={username};Pwd={password}";
+            sqlcon.ConnectionString = $@"Server={servername};Port={port};Database={dbname};Uid={username};Pwd={password}; convert zero datetime=True";
+        }
+
+        public void Close()
+        {
+            if (sqlcon.State == ConnectionState.Open)
+                sqlcon.Close();
         }
 
         /// <summary>

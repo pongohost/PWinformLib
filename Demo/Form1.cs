@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Drawing;
 using System.Threading;
 using PWinformLib.UI;
@@ -7,12 +8,14 @@ using System.Windows.Forms;
 using PWinformLib;
 using PWinformLib.Preloader;
 using PWinformLib.Properties;
+using PWinformLib.UI.modal;
 
 namespace Demo
 {
     public partial class Form1 : Form
     {
-        
+
+        DataTable dt;
         //===============================================================================
         private int i = 0;
         public Form1()
@@ -23,55 +26,57 @@ namespace Demo
                 ControlStyles.DoubleBuffer, true);
             InitializeComponent();
         }
+        
+        private void Form1_Shown(object sender, EventArgs e)
+        {
+            
+        }
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+
+        }
+
+        private void textBox1_Enter(object sender, EventArgs e)
+        {
+            Console.Out.WriteLine("DSdsfsdf");
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void pTextBoxAni1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void pTextBoxAni21_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("mmmmmmmmmmmmmm");
+        }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            //Preloaderani.addSpinnLoad(dataGridView1);
-        }
-
-        private void button2_Click(object sender, EventArgs e)
-        {
-            //notification.Ok("JUDUL2 hahaha", "Tesss kkds\r\nkfsd sfksdksf sdfsdfsdf dsf sd fsd f sdf sdfdsfdsfsdf dsfdsfsdfsdfsdf dsfdsfdsfdsfdsf sdfdfsdfsfsf sdfsdfsfsfsd sdfdsfsdfsf");
-            /*Form2 xx = new Form2();
-            xx.Show();*/
-
-        }
-
-        private void dataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)
-        {
-           /*HelperDGDTDS.AddDatePickerDGV(sender,e,1);
-           SendKeys.SendWait("%{DOWN}");*/
-        }
-
-        private void pTextBox1_ButtonClick(object sender, EventArgs e)
-        {
-            MessageBox.Show("klik1");
-        }
-
-        private void Form1_Shown(object sender, EventArgs e)
-        {
-            //splitContainer1.BackgroundImage = Resources.Grip;
-
-        }
-        
-        private void panel2_Paint(object sender, PaintEventArgs e)
-        {
-            Helper.DrawBorder(e,(Control)sender,Color.Aqua,5,ButtonBorderStyle.Dashed);
-        }
-
-        private void pTextBox1_Click(object sender, EventArgs e)
-        {
-
+            Warn aaWarn = new Warn();
+            aaWarn.Draggable = true;
+            aaWarn.Title = "Errorrrrrr!!!!!!";
+            aaWarn.Message = "Pesan sfsdf sdfdsfs sgdfdsfs gdsgsdfsdg fdsgfd sdgfhthd sdgh fdgsfa dh";
+            aaWarn.OkText = "yahaa";
+            aaWarn.BackgroundColor = Color.Aqua;
+            aaWarn.StartPosition = FormStartPosition.CenterParent;
+            aaWarn.ShowDialog();
+            MessageBox.Show(aaWarn.Result + " - " + aaWarn.DialogResult);
         }
 
         private void pFlatButton1_Click(object sender, EventArgs e)
         {
-            MessageBox.Show(pTextBox1.Text);
+            /*DataTable dt = ExcelHelper.GetDataTableFromExcel(@"C:\Users\bss\Desktop\a.xlsx");
+            DataSet ds = ExcelHelper.GetDataSetFromExcel(@"C:\Users\bss\Desktop\a.xlsx");
+            DataTable dt2 = ExcelHelper.GetDataTableFromExcel(@"C:\Users\bss\Desktop\a.xlsx",4,3);*/
+            HelperDGDTDS.clearDataTableRow(dt);
         }
 
-        private void panel1_Paint(object sender, PaintEventArgs e)
-        {
-            Helper.DrawBorder(e, (Control)sender, Color.Red, 2, ButtonBorderStyle.Dashed);
-        }
     }
 }

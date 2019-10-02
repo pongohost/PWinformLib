@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -22,6 +23,8 @@ namespace PWinformLib
         private ContentAlignment _textAlign;
         private ContentAlignment _wmTextAlign;
         private ContentAlignment _tempTextAlign;
+        private string[] _autoComplete;
+        private AutoCompleteMode _autoMode;
         private char passChar = ' ';
 
         public PTextBox()
@@ -50,6 +53,8 @@ namespace PWinformLib
             Size = new Size(135, 33);
             DoubleBuffered = true;
             box.KeyDown += box_KeyDown;
+            box.KeyUp += (sender, args) =>{base.OnKeyUp(args);} ;
+            box.KeyPress += (sender, args) => { base.OnKeyPress(args); };
             box.TextChanged += box_TextChanged;
             box.MouseDoubleClick += box_MouseDoubleClick;
             box.Enter += text_Enter;
@@ -57,7 +62,7 @@ namespace PWinformLib
             box.VisibleChanged += text_Leave;
         }
 
-        public static bool SetStyle(Control c, ControlStyles Style, bool value)
+        private static bool SetStyle(Control c, ControlStyles Style, bool value)
         {
             bool retval = false;
             Type typeTB = typeof(Control);
@@ -79,10 +84,9 @@ namespace PWinformLib
             {
                 box.Text = _watermark;
                 box.Font = _wfont;
-                passChar = box.PasswordChar;
                 box.PasswordChar = '\0';
-                _tempTextAlign = TextAlign;
-                TextAlign = _wmTextAlign;
+                _tempTextAlign = PTextAlign;
+                PTextAlign = _wmTextAlign;
             }
         }
 
@@ -93,7 +97,7 @@ namespace PWinformLib
                 box.Text = "";
                 box.Font = Font;
                 box.PasswordChar = passChar;
-                TextAlign = _tempTextAlign;
+                PTextAlign = _tempTextAlign;
             }
         }
 
@@ -146,6 +150,7 @@ namespace PWinformLib
                 box.SelectionStart = 0;
                 box.SelectionLength = Text.Length;
             }
+            base.OnKeyDown(e);
         }
         
         protected override void OnFontChanged(EventArgs e)
@@ -160,6 +165,11 @@ namespace PWinformLib
             box.Focus();
         }
 
+        protected override void OnGotFocus(EventArgs e)
+        {
+            box.Focus();
+        }
+
         protected override void OnForeColorChanged(EventArgs e)
         {
             base.OnForeColorChanged(e);
@@ -169,10 +179,18 @@ namespace PWinformLib
 
         protected override void OnPaint(PaintEventArgs e)
         {
+            if (_autoComplete != null && _autoMode != null)
+            {
+                AutoCompleteStringCollection acsc = new AutoCompleteStringCollection();
+                acsc.AddRange(_autoComplete);
+                box.AutoCompleteCustomSource = acsc;
+                box.AutoCompleteMode = _autoMode;
+                box.AutoCompleteSource = AutoCompleteSource.CustomSource;
+            }
             shape = new RoundedBorder(Width-1, Height-1, _radius).Path;
             innerRect = new RoundedBorder(Width - 1.5f, Height - 1.5f, _radius, 0.5f, 0.5f).Path;
             resizeTextBox();
-
+            
             e.Graphics.SmoothingMode = SmoothingMode.HighQuality;
             Bitmap bmp = new Bitmap(Width, Height);
             Graphics grp = Graphics.FromImage(bmp);
@@ -202,20 +220,37 @@ namespace PWinformLib
             }
         }
 
-
-        public Char PasswordChar
+        //[Editor("System.Windows.Forms.Design.StringCollectionEditor, System.Design, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(System.Drawing.Design.UITypeEditor))]
+        public string[] AutoCompleteList
         {
-            get { return box.PasswordChar; }
-            set { box.PasswordChar = value; Invalidate(); }
+            get { return _autoComplete; }
+            set {_autoComplete = value;Invalidate();}
         }
         
-        public ContentAlignment TextAlign
+        public AutoCompleteMode AutoCompleteMode
+        {
+            get { return _autoMode; }
+            set { _autoMode = value;Invalidate(); }
+        }
+        public Char PasswordChar
+        {
+            get { return passChar; }
+            set
+            {
+                box.PasswordChar = value;
+                passChar = value;
+
+                Console.Out.WriteLine(passChar + " =====" + PasswordChar + " ====="+value);
+                Invalidate(); }
+        }
+        
+        public ContentAlignment PTextAlign
         {
             get { return _textAlign; }
             set { _textAlign = value; Invalidate(); }
         }
         
-        public bool MultiLine
+        public bool PMultiLine
         {
             get { return box.Multiline; }
             set { box.Multiline = value; Invalidate(); }
@@ -224,7 +259,7 @@ namespace PWinformLib
         /// <summary>
         /// Gets or sets the cue banner text FOnt.
         /// </summary>
-        public Font WatermarkFont
+        public Font PWatermarkFont
         {
             get
             {
@@ -241,7 +276,7 @@ namespace PWinformLib
         /// <summary>
         /// Gets or sets Watermark text.
         /// </summary>
-        public string Watermark
+        public string PWatermark
         {
             get
             {
@@ -255,13 +290,13 @@ namespace PWinformLib
             }
         }
         
-        public ContentAlignment WatermarkTextAlign
+        public ContentAlignment PWatermarkTextAlign
         {
             get { return _wmTextAlign; }
             set { _wmTextAlign = value; Invalidate(); }
         }
 
-        public Color BgColor
+        public Color PBgColor
         {
             get
             {
@@ -288,7 +323,7 @@ namespace PWinformLib
             }
         }
 
-        public int Radius
+        public int PRadius
         {
             get
             {
@@ -301,7 +336,7 @@ namespace PWinformLib
             }
         }
 
-        public Color BorderColor
+        public Color PBorderColor
         {
             get
             {

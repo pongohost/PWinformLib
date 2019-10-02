@@ -121,6 +121,21 @@ namespace PWinformLib
         }
 
         /// <summary>
+        /// Check if string is number only
+        /// </summary>
+        /// <param name="stringCheck">Checked Strng Value.</param>
+        /// <returns>Returns true if all string is number.</returns>
+        public static bool isNumberOnly(string stringCheck)
+        {
+            foreach (char c in stringCheck)
+            {
+                if (c < '0' || c > '9')
+                    return false;
+            }
+            return true;
+        }
+
+        /// <summary>
         /// Draw Border around control
         /// </summary>
         /// <param name="e">PaintEventArgs.</param>
@@ -231,8 +246,13 @@ namespace PWinformLib
             }
         }
 
+        public static void addComboItem(ComboBox cb, DataSet ds,int DTnumber)
+        {
+            DataTable tbl = ds.Tables[DTnumber];
+            addComboItem(cb,tbl);
+        }
         // Format Kolom 1 = value,kolom 2 display
-        public static void addComboItem(ComboBox cb, DataSet ds)
+        /*public static void addComboItem(ComboBox cb, DataSet ds)
         {
             cb.DataSource = null;
             String[] namakolom = new String[2];
@@ -245,9 +265,8 @@ namespace PWinformLib
             }
             cb.DataSource = tbl;
             cb.ValueMember = namakolom[0];
-            cb.DisplayMember = namakolom[1];
-
-        }
+            cb.DisplayMember = namakolom[1];s
+        }*/
 
         public static void setDatePickerMaxMinValue(DateTimePicker dp,DateTime min,DateTime max)
         {
@@ -286,6 +305,49 @@ namespace PWinformLib
                 foreach (var child in control.Controls.OfType<Control>())
                     queue.Enqueue(child);
             } while (queue.Count > 0);
+        }
+
+        /// <summary>
+        /// Mendapatkan list control pada layout.
+        /// </summary>
+        /// <param name="root">Nama panel yang d attach.</param>
+        /// <returns>Returns IEnumerable.</returns>
+        public static void DisableAllControl(Control root)
+        {
+            var a = GetAllControl(root).ToList();
+            foreach (var ctrl in a)
+            {
+                if (ctrl is TextBox)
+                {
+                    TextBox b = (TextBox)ctrl;
+                    ctrl.Enabled = false;
+                }
+                else if (ctrl is ComboBox)
+                {
+                    ComboBox b = (ComboBox)ctrl;
+                    ctrl.Enabled = false;
+                }
+                else if (ctrl is DateTimePicker)
+                {
+                    DateTimePicker b = (DateTimePicker)ctrl;
+                    ctrl.Enabled = false;
+                }
+                else if (ctrl is Button)
+                {
+                    Button b = (Button)ctrl;
+                    ctrl.Enabled = false;
+                }
+                else if (ctrl is PTextBox)
+                {
+                    PTextBox b = (PTextBox)ctrl;
+                    ctrl.Enabled = false;
+                }
+                else if (ctrl is PFlatButton)
+                {
+                    PFlatButton b = (PFlatButton)ctrl;
+                    ctrl.Enabled = false;
+                }
+            }
         }
 
         /// <summary>
@@ -410,36 +472,19 @@ namespace PWinformLib
         }
 
         /// <summary>
-        /// Menambah Preloader yang di pasang pada komponen.
+        /// Get String Width.
         /// </summary>
-        /// <param name="pnl">Nama panel yang d attach.</param>
-        /*public static void addSpinnLoad(Control pnl)
+        /// <param name="TextString">String to count length.</param>
+        /// <param name="TextFont">String Font.</param>
+        /// <returns>Returns SizeF.</returns>
+        private static SizeF StringWidth(string TextString, Font TextFont)
         {
-            SpinningCircles spinningCircles = new SpinningCircles();
-            spinningCircles.randColor = true;
-            spinningCircles.Location = new Point(pnl.Width/2-50, pnl.Height/2-50);
-            spinningCircles.Visible = true;
-            pnl.Controls.Add(spinningCircles);
-            spinningCircles.BringToFront();
-        }*/
-
-        /// <summary>
-        /// Menghapus Preloader yang di pasang pada komponen.
-        /// </summary>
-        /// <param name="pnl">Nama panel yang d attach.</param>
-        /*public static void remSpinnLoad(Control pnl)
-        {
-            var controlLst = GetAllControl(pnl).ToList();
-            foreach (var control in controlLst)
+            using (Graphics g = Graphics.FromHwnd(IntPtr.Zero))
             {
-                if (control is SpinningCircles)
-                {
-                    SpinningCircles tdr = ((SpinningCircles)control);
-                    pnl.Controls.Remove(tdr);
-                    tdr.Dispose();
-                }
+                SizeF size = g.MeasureString(TextString, TextFont);
+                return size;
             }
-        }*/
+        }
 
         /// <summary>
         /// Mengcopy file image ke clipboard.

@@ -28,7 +28,7 @@ namespace PWinformLib.UI
                 return;
             }
             RectangleF upperLeftRect = new RectangleF(x, y, 2 * radius, 2 * radius);
-            RectangleF upperRightRect = new RectangleF(width - 2 * radius - 1, x, 2 * radius, 2 * radius);
+            RectangleF upperRightRect = new RectangleF(width - 2 * radius - 1, y, 2 * radius, 2 * radius);
             RectangleF lowerLeftRect = new RectangleF(x, height - 2 * radius - 1, 2 * radius, 2 * radius);
             RectangleF lowerRightRect = new RectangleF(width - 2 * radius - 1, height - 2 * radius - 1, 2 * radius, 2 * radius);
 

@@ -61,22 +61,33 @@ namespace PWinformLib
 
         //convert datagridview data to datatable
         //DataTable dataTable = ToDataTable(dataGridView1);
-        public static DataTable DGVToDataTable(DataGridView dataGridView)
+
+        public static DataTable DGVToDataTable(DataGridView dataGridView, string name = "")
         {
             var dt = new DataTable();
+            if (name.Length < 1)
+                dt.TableName = dataGridView.Name;
+            else dt.TableName = name;
             foreach (DataGridViewColumn dataGridViewColumn in dataGridView.Columns)
             {
                 if (dataGridViewColumn.Visible)
                 {
-                    dt.Columns.Add();
+                    dt.Columns.Add(dataGridViewColumn.HeaderText);
                 }
             }
-            var cell = new object[dataGridView.Columns.Count];
+            var cell = new object[dt.Columns.Count];
             foreach (DataGridViewRow dataGridViewRow in dataGridView.Rows)
             {
-                for (int i = 0; i < dataGridViewRow.Cells.Count; i++)
+                int i = 0;
+                int j = 0;
+                foreach (DataGridViewColumn dataGridViewColumn in dataGridView.Columns)
                 {
-                    cell[i] = dataGridViewRow.Cells[i].Value;
+                    if (dataGridViewColumn.Visible)
+                    {
+                        cell[j] = dataGridViewRow.Cells[i].Value;
+                        j++;
+                    }
+                    i++;
                 }
                 dt.Rows.Add(cell);
             }
@@ -151,16 +162,13 @@ namespace PWinformLib
 
         public static void clearDataTableRow(DataTable dt)
         {
-            /*foreach (DataRow row in dt.Rows)
-            {
-                row.Delete();
-            }*/
+            if(dt!=null)
             for (int i = dt.Rows.Count -1; i >=0; i--)
             {
                 dt.Rows[i].Delete();
             }
-            //TableAdapter.Update(dt);
         }
+
         //
         public static void AddDatePickerDGV(object sender, DataGridViewCellEventArgs e,int ColPos)
         {
@@ -301,5 +309,68 @@ namespace PWinformLib
             g.DrawRectangle(p, newCell);
             g.DrawString(recValue, dgv.DefaultCellStyle.Font, new SolidBrush(dgv.DefaultCellStyle.ForeColor), newCell.X + 3, newCell.Y + 3);
         }
+
+        //============================= Add Checkbox     =============================================
+        private class HeaderCheckBox
+        {
+            public CheckBox CheckBox { get; set; }
+            private int ColumnIndex;
+        }
+
+        public static void AddHeaderCheckBox(DataGridView dgv,int ColumnIndex,int SizeBox=15)
+        {
+            CheckBox HeaderCheckBox = new CheckBox();
+
+            HeaderCheckBox.Size = new Size(15, 15);
+            HeaderCheckBox.Tag = ColumnIndex;
+
+            //Add the CheckBox into the DataGridView
+            dgv.Controls.Add(HeaderCheckBox);
+            GetTextLocation(dgv,HeaderCheckBox,ColumnIndex);
+            HeaderCheckBox.MouseUp += new MouseEventHandler(HeaderCheckBox_MouseClick);
+            /*HeaderCheckBox hcBox = new HeaderCheckBox();
+            hcBox.CheckBox = new CheckBox();
+            hcBox.CheckBox.Size = new Size(SizeBox,SizeBox);
+            dgv.Controls.Add(hcBox.CheckBox);
+            GetTextLocation(dgv, hcBox.CheckBox, ColumnIndex);*/
+
+        }
+        private static void GetTextLocation(DataGridView dgv,CheckBox cb,int ColumnIndex)
+        {
+            //Get the column header cell bounds
+            Rectangle oRectangle = dgv.GetCellDisplayRectangle(ColumnIndex, -1, true);
+            
+            Point oPoint = new Point();
+            oPoint.X = oRectangle.Location.X + dgv.Columns[1].HeaderCell.ContentBounds.X 
+                                             + dgv.Columns[1].HeaderCell.ContentBounds.Width;
+            oPoint.Y = oRectangle.Location.Y + (oRectangle.Height - cb.Height) / 2 + 1;
+
+            //Change the location of the CheckBox to make it stay on the header
+            cb.Location = oPoint;
+        }
+
+        private static void HeaderCheckBox_MouseClick(object sender, MouseEventArgs e)
+        {
+            CheckBox cbBox = (CheckBox) sender;
+            DataGridView dgv = (DataGridView)cbBox.Parent;
+            foreach (DataGridViewRow row in dgv.Rows)
+            {
+                ((DataGridViewCheckBoxCell)row.Cells[(int)cbBox.Tag]).Value = cbBox.CheckState;
+            }
+        }
+        /*private void HeaderCheckBoxClick(CheckBox HCheckBox)
+        {
+            IsHeaderCheckBoxClicked = true;
+
+            foreach (DataGridViewRow Row in dgvSelectAll.Rows)
+                ((DataGridViewCheckBoxCell)Row.Cells["chkBxSelect"]).Value = HCheckBox.Checked;
+
+            dgvSelectAll.RefreshEdit();
+
+            TotalCheckedCheckBoxes = HCheckBox.Checked ? TotalCheckBoxes : 0;
+
+            IsHeaderCheckBoxClicked = false;
+        }*/
+        //============================= End Add Checkbox =============================================
     }
 }

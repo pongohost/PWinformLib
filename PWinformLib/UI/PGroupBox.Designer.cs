@@ -28,17 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.panelBox = new System.Windows.Forms.Panel();
             this.title_lbl = new System.Windows.Forms.Label();
             this.SuspendLayout();
-            // 
-            // panelBox
-            // 
-            this.panelBox.Location = new System.Drawing.Point(28, 68);
-            this.panelBox.Name = "panelBox";
-            this.panelBox.Size = new System.Drawing.Size(177, 123);
-            this.panelBox.TabIndex = 0;
-            this.panelBox.Paint += new System.Windows.Forms.PaintEventHandler(this.panelBox_Paint);
             // 
             // title_lbl
             // 
@@ -56,7 +47,6 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Transparent;
             this.Controls.Add(this.title_lbl);
-            this.Controls.Add(this.panelBox);
             this.Name = "PGroupBox";
             this.Size = new System.Drawing.Size(242, 227);
             this.ResumeLayout(false);
@@ -65,8 +55,6 @@
         }
 
         #endregion
-
-        private System.Windows.Forms.Panel panelBox;
         private System.Windows.Forms.Label title_lbl;
     }
 }

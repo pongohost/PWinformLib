@@ -10,8 +10,8 @@ namespace PWinformLib.UI
         private bool dragable = false;
         private Size mouseOffset;
         Control ThisControl;
-        public string RightControl { get; set; }
-        public string LeftControl { get; set; }
+        public string PRightControl { get; set; }
+        public string PLeftControl { get; set; }
 
         public PDragHorizontal()
         {
@@ -29,7 +29,7 @@ namespace PWinformLib.UI
         
         private Control getControl(string ctrlName)
         {
-            foreach (Control ctrl in ParentForm.Controls)
+            foreach (Control ctrl in Parent.Controls)
             {
                 if (ctrl.Name.Equals(ctrlName))
                     return ctrl;
@@ -66,18 +66,24 @@ namespace PWinformLib.UI
                 Point newLocationOffset = e.Location - mouseOffset;
                 // ThisControl.Top += newLocationOffset.Y;
                 ThisControl.Left += newLocationOffset.X;
-                if (RightControl != null)
+                if (PRightControl != null)
                 {
-                    Control rCtrl = getControl(RightControl);
-                    rCtrl.Left += newLocationOffset.X;
-                    rCtrl.Width -= newLocationOffset.X;
-                    rCtrl.Invalidate();
+                    Control rCtrl = getControl(PRightControl);
+                    if(rCtrl!=null)
+                    {
+                        rCtrl.Left += newLocationOffset.X;
+                        rCtrl.Width -= newLocationOffset.X;
+                        rCtrl.Invalidate();
+                    }
                 }
-                if (LeftControl != null)
+                if (PLeftControl != null)
                 {
-                    Control lCtrl = getControl(LeftControl);
-                    lCtrl.Width += newLocationOffset.X;
-                    lCtrl.Invalidate();
+                    Control lCtrl = getControl(PLeftControl);
+                    if(lCtrl!=null)
+                    {
+                        lCtrl.Width += newLocationOffset.X;
+                        lCtrl.Invalidate();
+                    }
                 }
             }
         }

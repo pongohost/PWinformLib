@@ -29,7 +29,7 @@ namespace PWinformLib.UI
             {
                 txt_input.Visible = true;
                 kode = kodeCaptcha;
-                txt_input.Watermark = $"Ketik \"{kodeCaptcha}\" untuk menyetujui";
+                txt_input.PWatermark = $"Ketik \"{kodeCaptcha}\" untuk menyetujui";
             }
             lbl_pesan.Text = pesan;
             lbl_imbang.Size = new Size(440 - lbl_pesan.Width,1);
