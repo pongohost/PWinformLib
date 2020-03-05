@@ -1,16 +1,17 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Data;
+using System.Drawing;
 using System.Windows.Forms;
 using System.Threading.Tasks;
 using PWinformLib.Preloader;
 using PWinformLib.UI;
 
-namespace PWinformLib
+namespace PWinformLib.DB
 {
     public class MsSQL
     {
-        //static SqlConnection sqlcon = new SqlConnection();
         private string ConString = "";
         
         public void SetConnection(String servername, String dbname, String username, String password, String port)
@@ -18,444 +19,239 @@ namespace PWinformLib
             ConString = "Server=" + servername + ","+ port + ";Database=" + dbname + ";User Id=" + username + ";Password=" + password + ";";
         }
 
-        public void kuerisql(String perintah,String judul, String pesan)
+        public void InsertMultiple(string tableName, string data, string pemisah)
         {
-            SqlConnection sqlcon = new SqlConnection();
-            sqlcon.ConnectionString = ConString;
-            SqlCommand command = new SqlCommand(perintah, sqlcon);
-            sqlcon.Open();
-            try
-            {
-                command.ExecuteNonQuery();
-                notification.Ok(judul, pesan);
-            }
-            catch (SqlException exx)
-            {
-                notification.Error("Query Gagal", exx.Message);
-            }
-            finally
-            {
-                sqlcon.Close();
-            }
+            string str1 = "INSERT INTO " + tableName + " VALUES ";
+            string str2 = data;
+            string[] separator = new string[1] { pemisah };
+            foreach (string str3 in str2.Split(separator, StringSplitOptions.RemoveEmptyEntries))
+                str1 = str1 + " (" + str3 + "),";
+            this.SqlTrans(str1.Remove(str1.Length - 1), "||||");
         }
-        //===============================================================================================
-        public void insertMultiple(String kueryAwal,String data,String pemisah)
+        
+        public Task insertMultipleAsync(string kueryAwal, string data, string pemisah)
         {
-            String hasil = insertMultipleAct(kueryAwal, data, pemisah);
-            if(hasil.Equals("OK"))
-                notification.Ok("Simpan Data", "Data Berhasil di Simpan.");
-            else
-                notification.Error("Query Gagal", hasil);
+            return Task.Run((Action)(() => InsertMultiple(kueryAwal, data, pemisah)));
+        }
 
-        }
-        public String insertMultipleAct(String kueryAwal, String data, String pemisah)
+        public void BulkInsert(string TblName, DataTable data, List<string[]> columnMapping = null,
+            SqlBulkCopyOptions options = SqlBulkCopyOptions.TableLock | SqlBulkCopyOptions.FireTriggers | SqlBulkCopyOptions.UseInternalTransaction,
+            SqlTransaction SqlTrans = null)
         {
-            SqlConnection sqlcon = new SqlConnection();
-            sqlcon.ConnectionString = ConString;
-            string StrQuery = "";
-            String status = "";
-            using (SqlCommand comm = new SqlCommand())
+            using (SqlConnection connection = new SqlConnection(this.ConString))
             {
-                sqlcon.Open();
-                try
+                connection.Open();
+                using (SqlBulkCopy sqlBulkCopy = new SqlBulkCopy(connection, options, SqlTrans))
                 {
-                    String[] data2 = data.Split(new[] { pemisah }, StringSplitOptions.RemoveEmptyEntries);
-                    for (int i = 0; i < data2.Length; i++)
+                    try
                     {
-                        StrQuery = kueryAwal + " VALUES (";
-                        StrQuery = StrQuery + data2[i] + ");";
-                        comm.CommandText = StrQuery;
-                        comm.Connection = sqlcon;
-                        comm.ExecuteNonQuery();
+                        sqlBulkCopy.DestinationTableName = TblName;
+                        foreach (DataColumn column in (InternalDataCollectionBase)data.Columns)
+                            sqlBulkCopy.ColumnMappings.Add(column.ColumnName, column.ColumnName);
+                        sqlBulkCopy.WriteToServer(data);
+                    }
+                    catch
+                    {
+                        connection.Close();
+                        throw;
+                    }
+                    finally
+                    {
+                        connection.Close();
                     }
                 }
-                catch (SqlException exx)
+            }
+        }
+
+        public Task BulkInsertAsync(string TblName, DataTable data, List<string[]> columnMapping = null,
+          SqlBulkCopyOptions options = SqlBulkCopyOptions.TableLock | SqlBulkCopyOptions.FireTriggers | SqlBulkCopyOptions.UseInternalTransaction,
+          SqlTransaction SqlTrans = null)
+        {
+            return Task.Run((Action)(() => this.BulkInsert(TblName, data, columnMapping, options, SqlTrans)));
+        }
+
+        public DataSet DsSql(string perintah)
+        {
+            DataSet dataSet = new DataSet();
+            DataTable dataTable = new DataTable();
+            using (SqlConnection connection = new SqlConnection(this.ConString))
+            {
+                try
                 {
-                    status = exx.Message + " - " + StrQuery;
+                    connection.Open();
+                    using (SqlCommand sqlCommand = new SqlCommand(perintah, connection))
+                    {
+                        SqlDataReader sqlDataReader = sqlCommand.ExecuteReader();
+                        while (!sqlDataReader.IsClosed)
+                        {
+                            DataTable table = new DataTable();
+                            table.Load((IDataReader)sqlDataReader);
+                            dataSet.Tables.Add(table);
+                        }
+                    }
+                }
+                catch
+                {
+                    connection.Close();
+                    throw;
                 }
                 finally
                 {
-                    sqlcon.Close();
-                    status = "OK";
+                    connection.Close();
                 }
             }
-            return status;
+            return dataSet;
         }
-        //==========================================================================================================
-        public DataTable queryTransaction(String kuery, String pemisah)
+
+        public Task<DataSet> DsSqlAsync(string sql)
         {
-            SqlConnection sqlcon = new SqlConnection();
-            sqlcon.ConnectionString = ConString;
-            string StrQuery = "";
-            DataTable dt = new DataTable();
-            dt.Columns.Add("Status", typeof(String));
-            dt.Columns.Add("Pesan", typeof(String));
-            SqlTransaction transaction;
-            using (SqlCommand comm = new SqlCommand())
+            return Task.Run<DataSet>((Func<DataSet>)(() => this.DsSql(sql)));
+        }
+
+        public DataTable DtSql(string sql)
+        {
+            return this.DsSql(sql).Tables[0];
+        }
+
+        public Task<DataTable> DtSqlAsync(string sql)
+        {
+            return Task.Run<DataTable>((Func<DataTable>)(() => this.DtSql(sql)));
+        }
+
+        public int SimpleSql(string query)
+        {
+            using (SqlConnection connection = new SqlConnection(this.ConString))
             {
-                sqlcon.Open();
-                transaction = sqlcon.BeginTransaction();
                 try
                 {
-                    String[] data2 = kuery.Split(new[] { pemisah }, StringSplitOptions.RemoveEmptyEntries);
-                    for (int i = 0; i < data2.Length; i++)
-                    {
-                        new SqlCommand(data2[i], sqlcon, transaction).ExecuteNonQuery();
-                    }
+                    SqlCommand sqlCommand = new SqlCommand(query, connection);
+                    connection.Open();
+                    return sqlCommand.ExecuteNonQuery();
+                }
+                catch
+                {
+                    connection.Close();
+                    throw;
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+        }
+
+        public Task<int> SimpleSqlAsync(string sql)
+        {
+            return Task.Run<int>((Func<int>)(() => this.SimpleSql(sql)));
+        }
+
+        public void SqlTrans(string query, string limitter)
+        {
+            SqlConnection connection = new SqlConnection();
+            connection.ConnectionString = this.ConString;
+            using (new SqlCommand())
+            {
+                connection.Open();
+                SqlTransaction transaction = connection.BeginTransaction();
+                try
+                {
+                    string str = query;
+                    string[] separator = new string[1] { limitter };
+                    foreach (string cmdText in str.Split(separator, StringSplitOptions.RemoveEmptyEntries))
+                        new SqlCommand(cmdText, connection, transaction).ExecuteNonQuery();
                     transaction.Commit();
                 }
-                catch (SqlException exx)
+                catch
                 {
-                    //notification.Error("Query Gagal", exx.Message + " - " + StrQuery);
-                    dt.Rows.Add("error", exx.Message + " - " + StrQuery);
-                }
-                finally
-                {
-                    //notification.Ok("Simpan Data", "Data Berhasil di Simpan.");
-                    dt.Rows.Add("ok", "Data Berhasil di Simpan");
-                    sqlcon.Close();
-                }
-            }
-
-            return dt;
-        }
-
-        public DataSet insertAllDatagrid(DataGridView dgv, string kuery, string[] namaKolom, string kueriHapus)
-        {
-            DataSet ds = new DataSet();
-            ds.Tables.Add(simplemssql(kueriHapus));
-            ds.Tables.Add(insertAllDatagrid(dgv, kuery, namaKolom));
-            return ds;
-        }
-
-        public DataTable insertAllDatagrid(DataGridView dgv, string kuery, string[] namaKolom)
-        {
-            DataTable table1 = new DataTable("insertAllDatagrid");
-            table1.Columns.Add("status");
-            table1.Columns.Add("Note");
-            using (SqlConnection sqlcon = new SqlConnection(ConString))
-            {
-                try
-                {
-                    sqlcon.Open();
-                    string StrQuery = kuery + " VALUES";
-                    for (int i = 0; i < dgv.Rows.Count; i++)
-                    {
-                        StrQuery = StrQuery + " (";
-                        for (int ii = 0; ii < namaKolom.Length; ii++)
-                        {
-                            StrQuery = StrQuery + "'"+dgv.Rows[i].Cells[namaKolom[ii].ToString()].Value+"'";
-                            if (ii < namaKolom.Length - 1)
-                                StrQuery = StrQuery + ", ";
-                        }
-                        StrQuery = StrQuery + ") ";
-                        if (i < dgv.Rows.Count - 1)
-                            StrQuery = StrQuery + ", ";
-                    }
-                    StrQuery = StrQuery + ";";
-                    Console.Out.WriteLine(StrQuery);
-                    using (SqlCommand comm = new SqlCommand(StrQuery,sqlcon))
-                    {
-                        comm.ExecuteNonQuery();
-                    }
-                    table1.Rows.Add("succes", "sukses");
-                }
-                catch (Exception ex)
-                {
-                    table1.Rows.Add("succes", ex.Message);
-                }
-                finally
-                {
-                    sqlcon.Close();
-                }
-            }
-            return table1;
-        }
-
-        public DataTable simplemssql(String perintah)
-        {
-            DataTable table1 = new DataTable("SimpleMsSql");
-            table1.Columns.Add("status");
-            table1.Columns.Add("affectedrows");
-            using (SqlConnection sqlcon = new SqlConnection(ConString))
-            {
-                try
-                {
-                    SqlCommand command = new SqlCommand(perintah, sqlcon);
-                    sqlcon.Open();
-                    int rowsAffected = command.ExecuteNonQuery();
-                    table1.Rows.Add("succes", rowsAffected);
-                }
-
-                catch (SqlException exx)
-                {
-                    table1.Rows.Add("failure", exx.Message);
-                }
-                finally
-                {
-                    sqlcon.Close();
-                }
-            }
-            return table1;
-        }
-
-        public DataSet dgsql(String perintah)
-        {
-            DataSet ds = new DataSet();
-            DataTable dt = new DataTable();
-            SqlDataReader dr = null;
-            Boolean err = false;
-            String errMsg="";
-            //using (SqlConnection conn = new SqlConnection("Server=" + server + ";Database=" + db + ";User Id=" + usern + ";Password=" + pass + ";"))
-            using (SqlConnection sqlcon = new SqlConnection(ConString))
-            {
-                try
-                {
-                    sqlcon.Open();
-                    using (SqlCommand cmd = new SqlCommand(perintah, sqlcon))
-                    {
-
-                        dr = cmd.ExecuteReader();
-                        int i = 0;
-                        while (!dr.IsClosed)
-                        {
-                            dt = new DataTable();
-                            dt.Load(dr);
-                            ds.Tables.Add(dt);
-                            if (!dr.HasRows)
-                            {
-                                break;
-                            }
-                        }
-
-                    }
-                }
-                /*catch
-                {
-                    sqlcon.Close();
+                    transaction.Rollback();
+                    connection.Close();
                     throw;
-                }*/
-                catch (SqlException ex) // This will catch all SQL exceptions
-                {
-                    Console.WriteLine("SQL exception issue: " + ex.Message);
-                    errMsg = "SQL exception issue: " + ex.Message;
-                    err = true;
                 }
-                catch (InvalidOperationException ex) // This will catch SqlConnection Exception
+                finally
                 {
-                    Console.WriteLine("Connection Exception issue: " + ex.Message);
-                    if (!ex.Message.Contains("HasRows when reader is closed"))
-                    {
-                        errMsg = "Connection Exception issue: " + ex.Message;
-                        err = true;
-                    }
+                    connection.Close();
                 }
-                catch (Exception ex) // This will catch every Exception
-                {
-                    //Will catch all Exception and write the message of the Exception but I do not recommend this to use.
-                    Console.WriteLine("Exception Message: " + ex.Message); 
-                    errMsg = "Exception Message: " + ex.Message;
-                    err = true;
-                }
-                if (err)
-                {
-                    DataTable dtr = new DataTable();
-                    dtr.Columns.Add("ERROR");
-                    dtr.Rows.Add(errMsg);
-                    ds.Tables.Add(dtr);
-                }
-                sqlcon.Close();
             }
-            return ds;
         }
 
-        public async Task<DataSet> AsyncDsSQL(String sql)
+        public Task SqlTransAsync(string sql, string separator)
         {
-            DataSet ds = new DataSet();
-            DataTable dt = new DataTable();
-            SqlDataReader dr = null;
-            Boolean err = false;
-            String errMsg = "";
-            using (SqlConnection sqlcon = new SqlConnection(ConString))
+            return Task.Run((Action)(() => this.SqlTrans(sql, separator)));
+        }
+
+        public void insertDgv(DataGridView dataGridViewv, string kuery, string[] columnName)
+        {
+            string query = "";
+            for (int index1 = 0; index1 < dataGridViewv.Rows.Count; ++index1)
             {
-                using (SqlCommand cmd = new SqlCommand(sql, sqlcon))
+                string str = query + kuery + " VALUES (";
+                for (int index2 = 0; index2 < columnName.Length; ++index2)
+                {
+                    str = str + "'" + dataGridViewv.Rows[index1].Cells[columnName[index2]].Value + "'";
+                    if (index2 < columnName.Length - 1)
+                        str += ", ";
+                }
+                query = str + ") ";
+                if (index1 < dataGridViewv.Rows.Count - 1)
+                    query += "[|]";
+            }
+            this.SqlTrans(query, "[|]");
+        }
+
+        public Task insertDgvAsync(DataGridView dataGridViewv, string query, string[] columnName)
+        {
+            return Task.Run((Action)(() => this.insertDgv(dataGridViewv, query, columnName)));
+        }
+
+        public async void insertLog(string id, string modul, string pesan, string ip, string hostname, int sessi)
+        {
+            using (SqlConnection sqlcon = new SqlConnection(this.ConString))
+            {
+                using (SqlCommand cmd = new SqlCommand("EXEC insertLog @ident = '" + id + "',@modul='" + modul + "',@messg='" + Helper.AddSlash(pesan) + "',@ip='" + ip + "',@hostn='" + hostname + "',@sessi=" + (object)sessi, sqlcon))
                 {
                     try
                     {
                         await cmd.Connection.OpenAsync();
-                        using (dr = await cmd.ExecuteReaderAsync())
-                        {
-                            while (true)
-                            {
-                                dt = new DataTable();
-                                dt.Load(dr);
-                                ds.Tables.Add(dt);
-                                if (!dr.HasRows)
-                                {
-                                    break;
-                                }
-                            }
-                        }
+                        int num = await cmd.ExecuteNonQueryAsync();
                     }
-                    catch (SqlException ex) // This will catch all SQL exceptions
+                    catch (Exception ex)
                     {
-                        Console.WriteLine("SQL exception issue: " + ex.Message);
-                        errMsg = "SQL exception issue: " + ex.Message;
-                        err = true;
-                    }
-                    catch (InvalidOperationException ex) // This will catch SqlConnection Exception
-                    {
-                        Console.WriteLine("Connection Exception issue: " + ex.Message);
-                        if (!ex.Message.Contains("HasRows when reader is closed"))
-                        {
-                            errMsg = "Connection Exception issue: " + ex.Message;
-                            err = true;
-                        }
-                    }
-                    catch (Exception ex) // This will catch every Exception
-                    {
-                        //Will catch all Exception and write the message of the Exception but I do not recommend this to use.
-                        Console.WriteLine("Exception Message: " + ex.Message);
-                        errMsg = "Exception Message: " + ex.Message;
-                        err = true;
-                    }
-                    if (err)
-                    {
-                        DataTable dtr = new DataTable();
-                        dtr.Columns.Add("ERROR");
-                        dtr.Rows.Add(errMsg);
-                        ds.Tables.Add(dtr);
+                        notification.Error("Connection setup", "Connect to DB Failed " + ex.Message.ToString(), false);
                     }
                 }
             }
-            return ds;
         }
         
-        public async void tescon(String servername, String dbname, String username, String password, String port)
+        public async void DgvFromSqlAsync(DataGridView dgv, string sql)
         {
-            using (SqlConnection conn = new SqlConnection("Server=" + servername + ","+port+";Database=" + dbname + ";User Id=" + username + ";Password=" + password + ";"))
+            Preloaderani.addSpinnLoad((Control)dgv, "", "BoxSwap", 77, 77, (Image)null);
+            dgv.DataSource = (object)(await this.DsSqlAsync(sql)).Tables[0];
+            Preloaderani.remSpinnLoad((Control)dgv);
+        }
+
+        public void TesConnectionN(string servername, string dbname, string username, string password, string port)
+        {
+            try
+            {
+                this.TesConnection(servername, dbname, username, password, port);
+                notification.Info("Connection setup", "Successfully connected to DB.", false);
+            }
+            catch (Exception ex)
+            {
+                notification.Error("Connection setup", "Connect to DB Failed " + ex.Message.ToString(), false);
+            }
+        }
+
+        public async void TesConnection(string servername, string dbname, string username, string password, string port)
+        {
+            using (SqlConnection conn = new SqlConnection("Server=" + servername + "," + port + ";Database=" + dbname + ";User Id=" + username + ";Password=" + password + ";"))
             {
                 using (SqlCommand cmd = new SqlCommand("select 1 as hasil", conn))
                 {
-                    try
-                    {
-                        await cmd.Connection.OpenAsync();
-                        await cmd.ExecuteNonQueryAsync();                        
-                        notification.Info("Connection setup", "Successfully connected to DB.");
-                    }
-                    catch (Exception ex)
-                    {
-                        notification.Error("Connection setup", "Connect to DB Failed "+ ex.Message.ToString());
-                    }
+                    await cmd.Connection.OpenAsync();
+                    int num = await cmd.ExecuteNonQueryAsync();
                 }
             }
         }
-
-        public async void insertLog(String id,String modul,String pesan,String ip,String hostname,int sessi)
-        {
-            using (SqlConnection sqlcon = new SqlConnection(ConString))
-            {
-                String sql = "EXEC insertLog @ident = '" + id + "',@modul='" + modul + "',@messg='" + Helper.AddSlash(pesan) + "',@ip='" + ip + "',@hostn='" + hostname + "',@sessi=" + sessi;
-                Console.WriteLine(sql);
-                using (SqlCommand cmd = new SqlCommand(sql, sqlcon))
-                {
-                    try
-                    {                        
-                        await cmd.Connection.OpenAsync();
-                        await cmd.ExecuteNonQueryAsync();
-                        //notification.Info("Connection setup", "Successfully connected to DB.");
-                    }
-                    catch (Exception ex)
-                    {
-                        notification.Error("Connection setup", "Connect to DB Failed " + ex.Message.ToString());
-                    }
-                }
-            }
-        }
-
-        /*++++++++++++++++++++++++++++++++++++ ASYNC ++++++++++++++++++++++++++++++++++++++++++++++++++++=*/
-        public Task<DataSet> TaskDsSQL(String sql)
-        {
-            return Task.Run(() =>
-            {
-                DataSet ds = dgsql(sql);
-                return ds;
-            });
-        }
-
-        public Task<DataTable> TaskSimpleSQL(String sql)
-        {
-            return Task.Run(() =>
-            {
-                DataTable dt = simplemssql(sql);
-                return dt;
-            });
-        }
-
-        public Task<DataSet> TaskinsertAllDatagrid(DataGridView dgv, string kuery, string[] namaKolom, string kueriHapus)
-        {
-            return Task.Run(() =>
-            {
-                DataSet ds = new DataSet();
-                if (kueriHapus.Length > 2)
-                {
-                    ds.Tables.Add(simplemssql(kueriHapus));
-                }
-                ds.Tables.Add(insertAllDatagrid(dgv, kuery, namaKolom));
-                return ds;
-            });
-        }
-
-        public Task<String> TaskInsertMultiple(String kueryAwal, String data, String pemisah)
-        {
-            return Task.Run(() =>
-            {
-                String ds = insertMultipleAct(kueryAwal, data, pemisah);
-                return ds;
-            });
-        }
-
-        public Task<DataTable> TaskQueryTransaction(String sql, String separator)
-        {
-            return Task.Run(() =>
-            {
-                DataTable dt = queryTransaction(sql, separator);
-                return dt;
-            });
-        }
-
-        public async void insertAllDatagridAsync(DataGridView dgv, string kuery, string[] namaKolom, string kueriHapus = "")
-        {
-            Preloaderani.addSpinnLoad(dgv);
-            DataSet ds = await TaskinsertAllDatagrid(dgv, kuery, namaKolom, kueriHapus);
-            Preloaderani.remSpinnLoad(dgv);
-        }
-
-        public async void AsyncDgv(DataGridView dgv, String sql)
-        {
-            Preloaderani.addSpinnLoad(dgv);
-            DataSet ds = await TaskDsSQL(sql);
-            DataTable dGridTable = ds.Tables[0];
-            dgv.DataSource = dGridTable;
-            Preloaderani.remSpinnLoad(dgv);
-        }
-
-        /*+++++++++++++++++++++++++++++++++ LOCAL FUNCTION +++++++++++++++++++++++++++++++++++++++++++++++++++*/
-
-        /*private static int cek()
-        {
-            int xx = 1;
-            for (int x = 1; x < 5; x++)
-            {
-                if (mm2[x] == 0)
-                {
-                    xx = x;
-                    mm2[x] = 1;
-                    break;
-                }
-                //System.Diagnostics.Debug.WriteLine(x + " x " + xx);
-            }
-            return xx;
-        }*/
     }
 }

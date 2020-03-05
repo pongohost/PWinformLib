@@ -11,10 +11,9 @@ namespace PWinformLib.UI
         static int i = 1;
         static int[] ii = new int[5] { 1, 0, 0, 0, 0 };
 
-        public static void Info(String Title, String Message)
+        public static void Info(string Title, string Message, bool Autohide = false)
         {
             i = cek();
-            Console.Out.WriteLine(i);
             if (i < 4 && i != 0)
             {
                 CustomFont.Add("Helve", Properties.Resources.HelveticaNeueLight);
@@ -23,6 +22,7 @@ namespace PWinformLib.UI
                     TitleText = Title,
                     ContentText = Message,
                     AnimationInterval = 10,
+                    AutoHide = Autohide,
                     ShowOptionsButton = false,
                     ShowGrip = false,
                     ObjectNumber = i,
@@ -41,7 +41,7 @@ namespace PWinformLib.UI
             }
         }
 
-        public static void Error(String Title, String Message)
+        public static void Error(string Title, string Message, bool Autohide = false)
         {
             i = cek();
             Console.Out.WriteLine(i);
@@ -55,6 +55,7 @@ namespace PWinformLib.UI
                     ContentFont = CustomFont.GetFont("Helve", 10, FontStyle.Regular),
                     TitleFont = CustomFont.GetFont("Helve", 12, FontStyle.Regular),
                     AnimationInterval = 10,
+                    AutoHide = Autohide,
                     ShowOptionsButton = false,
                     ShowGrip = false,
                     ObjectNumber = i,
@@ -73,7 +74,7 @@ namespace PWinformLib.UI
             }
         }
 
-        public static void Ok(String Title, String Message)
+        public static void Ok(string Title, string Message, bool Autohide = false)
         {
 
             i = cek();
@@ -88,6 +89,7 @@ namespace PWinformLib.UI
                     ContentFont = CustomFont.GetFont("Helve", 10, FontStyle.Regular),
                     TitleFont = CustomFont.GetFont("Helve", 12, FontStyle.Regular),
                     AnimationInterval = 10,
+                    AutoHide = Autohide,
                     ShowOptionsButton = false,
                     ShowGrip = false,
                     ObjectNumber = i,
@@ -106,7 +108,7 @@ namespace PWinformLib.UI
             }
         }
 
-        public static void Warn(String Title, String Message)
+        public static void Warn(string Title, string Message, bool Autohide = false)
         {
             i = cek();
             Console.Out.WriteLine(i);
@@ -118,6 +120,7 @@ namespace PWinformLib.UI
                     TitleText = Title,
                     ContentText = Message,
                     AnimationInterval = 10,
+                    AutoHide = Autohide,
                     ShowOptionsButton = false,
                     ShowGrip = false,
                     ObjectNumber = i,
@@ -145,7 +148,6 @@ namespace PWinformLib.UI
         {
             int indeks = ((PopupNotifier)sender).ObjectNumber;
             soc[indeks].Dispose();
-            Console.Out.WriteLine(((PopupNotifier)sender).ObjectNumber);
             ii[indeks] = 0;
             if (listMsg.Count > 0)
             {

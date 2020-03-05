@@ -234,6 +234,10 @@ namespace PWinformLib
         [Description("Interval in milliseconds used to draw the animation.")]
         public int AnimationInterval { get; set; }
 
+        [Category("Behavior"), DefaultValue(false)]
+        [Description("Autohide notification.")]
+        public bool AutoHide { get; set; }
+
         [Category("Appearance"), DefaultValue(0)]
         [Description("Object number")]
         public int ObjectNumber { get; set; }
@@ -515,18 +519,15 @@ namespace PWinformLib
                     isAppearing = false;
                     maxPosition = frmPopup.Top;
                     maxOpacity = frmPopup.Opacity;
-                    if (!mouseIsOn)
-                    {
-                        tmrWait.Stop();
-                        tmrWait.Start();
-                        //System.Diagnostics.Debug.WriteLine("Wait timer started.");
-                    }
+                    if (mouseIsOn)
+                        return;
+                    tmrWait.Stop();
+                    if(!AutoHide)
+                        return;
+                    tmrWait.Start();
                 }
                 else
-                {
                     frmPopup.Hide();
-                    //Dispose(true);
-                }
             }
         }
 

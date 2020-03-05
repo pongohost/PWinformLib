@@ -10,22 +10,14 @@ namespace PWinformLib.DB
 {
     public class MySQL
     {
-        static MySqlConnection sqlcon = new MySqlConnection();
-        public void SetConnection(String servername, String dbname, String username, String password, String port)
+        private string connString;
+        public void SetConnection(string servername, string dbname, string username, string password, string port)
         {
-            if(sqlcon.State == ConnectionState.Open)
-                sqlcon.Close();
-            sqlcon.ConnectionString = $@"Server={servername};Port={port};Database={dbname};Uid={username};Pwd={password}; convert zero datetime=True";
+            connString = $@"Server={servername};Port={port};Database={dbname};Uid={username};Pwd={password}; convert zero datetime=True";
         }
-
-        public void Close()
-        {
-            if (sqlcon.State == ConnectionState.Open)
-                sqlcon.Close();
-        }
-
+        
         /// <summary>
-        /// Get DataSet from MySql Query
+        /// Get DataSet from MySql Query Asyncronously
         /// </summary>
         /// <param name="sql">SQL Query to execute.</param>
         /// <returns>Returns DataSet.</returns>
@@ -33,9 +25,53 @@ namespace PWinformLib.DB
         {
             return Task.Run(() =>
             {
-                DataSet ds = MySqlHelper.ExecuteDataset(sqlcon, sql);
-                return ds;
+                using (MySqlConnection con = new MySqlConnection(connString))
+                {
+                    return MySqlHelper.ExecuteDataset(con, sql);
+                }
             });
+        }
+
+        /// <summary>
+        /// Get DataSet from MySql Query
+        /// </summary>
+        /// <param name="sql">SQL Query to execute.</param>
+        /// <returns>Returns DataSet.</returns>
+        public DataSet DsSql(string sql)
+        {
+            using (MySqlConnection con = new MySqlConnection(connString))
+            {
+                return MySqlHelper.ExecuteDataset(con, sql);
+            }
+        }
+        
+        /// <summary>
+        /// Get DataTable from MySql Query Asyncronously
+        /// </summary>
+        /// <param name="sql">SQL Query to execute.</param>
+        /// <returns>Returns DataSet.</returns>
+        public Task<DataTable> AsyncDtSQL(String sql)
+        {
+            return Task.Run(() =>
+            {
+                using (MySqlConnection con = new MySqlConnection(connString))
+                {
+                    return MySqlHelper.ExecuteDataset(con, sql).Tables[0];
+                }
+            });
+        }
+
+        /// <summary>
+        /// Get DataTable from MySql Query Asyncronously
+        /// </summary>
+        /// <param name="sql">SQL Query to execute.</param>
+        /// <returns>Returns DataSet.</returns>
+        public DataTable DtSql(String sql)
+        {
+            using (MySqlConnection con = new MySqlConnection(connString))
+            {
+                return MySqlHelper.ExecuteDataset(con, sql).Tables[0];
+            }
         }
 
         /// <summary>
@@ -47,10 +83,48 @@ namespace PWinformLib.DB
         {
             return Task.Run(() =>
             {
-                if(sqlcon.State == ConnectionState.Closed)
-                    sqlcon.Open();
-                MySqlHelper.ExecuteNonQuery(sqlcon, sql);
+                using (MySqlConnection con = new MySqlConnection(connString))
+                {
+                    MySqlHelper.ExecuteNonQuery(con, sql);
+                }
             });
+        }
+
+        /// <summary>
+        /// Run Query Using Transaction
+        /// </summary>
+        /// <param name="sql">SQL Query to execute.</param>
+        /// <param name="limitter">Limitter Character.</param>
+        /// <returns>No Returns.</returns>
+        public void SqlTrans(string sql,string limitter)
+        {
+            using (MySqlConnection con = new MySqlConnection(connString))
+            {
+                using (MySqlCommand command = con.CreateCommand())
+                {
+                    con.Open();
+                    MySqlTransaction mySqlTransaction = con.BeginTransaction();
+                    command.Connection = con;
+                    command.Transaction = mySqlTransaction;
+
+                    try
+                    {
+                        string str1 = sql;
+                        string[] separator = new string[1] { limitter };
+                        foreach (string str2 in str1.Split(separator, StringSplitOptions.RemoveEmptyEntries))
+                        {
+                            command.CommandText = str2;
+                            command.ExecuteNonQuery();
+                        }
+                        mySqlTransaction.Commit();
+                    }
+                    catch
+                    {
+                        mySqlTransaction.Rollback();
+                        throw;
+                    }
+                }
+            }
         }
 
         /// <summary>
