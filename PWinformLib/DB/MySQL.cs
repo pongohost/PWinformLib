@@ -11,6 +11,16 @@ namespace PWinformLib.DB
     public class MySQL
     {
         private string connString;
+
+        /// <summary>
+        /// Set Connection string
+        /// </summary>
+        /// <param name="servername">Server Name.</param>
+        /// <param name="dbname">db name.</param>
+        /// <param name="username">Username.</param>
+        /// <param name="password">password.</param>
+        /// <param name="port">port.</param>
+        /// <returns>Returns DataSet.</returns>
         public void SetConnection(string servername, string dbname, string username, string password, string port)
         {
             connString = $@"Server={servername};Port={port};Database={dbname};Uid={username};Pwd={password}; convert zero datetime=True";

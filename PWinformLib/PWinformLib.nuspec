@@ -1,6 +1,9 @@
 <?xml version="1.0"?>
 <package >
   <metadata>
+	<dependencies>
+      <group targetFramework=".NETFramework4.5.2" />
+    </dependencies>
     <id>$id$</id>
     <version>$version$</version>
     <title>$title$</title>
