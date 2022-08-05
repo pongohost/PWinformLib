@@ -75,7 +75,7 @@ namespace Demo
             /*DataTable dt = ExcelHelper.GetDataTableFromExcel(@"C:\Users\bss\Desktop\a.xlsx");
             DataSet ds = ExcelHelper.GetDataSetFromExcel(@"C:\Users\bss\Desktop\a.xlsx");
             DataTable dt2 = ExcelHelper.GetDataTableFromExcel(@"C:\Users\bss\Desktop\a.xlsx",4,3);*/
-            HelperDGDTDS.clearDataTableRow(dt);
+            notification.Error("judul","pesan0",true);
         }
 
     }

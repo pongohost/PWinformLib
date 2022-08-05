@@ -33,13 +33,7 @@ namespace PWinformLib.DB
         /// <returns>Returns DataSet.</returns>
         public Task<DataSet> AsyncDsSQL(String sql)
         {
-            return Task.Run(() =>
-            {
-                using (MySqlConnection con = new MySqlConnection(connString))
-                {
-                    return MySqlHelper.ExecuteDataset(con, sql);
-                }
-            });
+            return Task.Run<DataSet>((Func<DataSet>)(() => this.DsSql(sql)));
         }
 
         /// <summary>
@@ -62,13 +56,7 @@ namespace PWinformLib.DB
         /// <returns>Returns DataSet.</returns>
         public Task<DataTable> AsyncDtSQL(String sql)
         {
-            return Task.Run(() =>
-            {
-                using (MySqlConnection con = new MySqlConnection(connString))
-                {
-                    return MySqlHelper.ExecuteDataset(con, sql).Tables[0];
-                }
-            });
+            return Task.Run<DataTable>((Func<DataTable>)(() => this.DtSql(sql)));
         }
 
         /// <summary>
@@ -85,19 +73,71 @@ namespace PWinformLib.DB
         }
 
         /// <summary>
-        /// Run No Query
+        /// Run No Query Async
         /// </summary>
         /// <param name="sql">SQL Query to execute.</param>
         /// <returns>No Returns.</returns>
         public Task AsyncNonQuery(String sql)
         {
-            return Task.Run(() =>
+            /*return Task.Run(() =>
             {
                 using (MySqlConnection con = new MySqlConnection(connString))
                 {
                     MySqlHelper.ExecuteNonQuery(con, sql);
                 }
-            });
+            });*/
+            using (MySqlConnection con = new MySqlConnection(connString))
+            {
+                return MySqlHelper.ExecuteDatasetAsync(con, sql);
+            }
+        }
+
+        /// <summary>
+        /// Run No Query Async
+        /// </summary>
+        /// <param name="sql">SQL Query to execute.</param>
+        /// <param name="listPar">List Parametes.</param>
+        /// <returns>No Returns.</returns>
+        public Task InsertParam(String sql,List<String> listPar)
+        {
+            using (MySqlConnection con = new MySqlConnection(connString))
+            {
+                string strQ = " VALUES (";
+                MySqlParameter[] param = new MySqlParameter[listPar.Count];
+                for (int i = 0; i < listPar.Count; i++)
+                {
+                    param[i] = new MySqlParameter("@a"+i,listPar[i]);
+                    strQ = strQ + "@a"+i+",";
+                }
+
+                sql = sql + strQ.Remove(strQ.Length-1,1)+")";
+                Console.Out.WriteLine(sql);
+                return MySqlHelper.ExecuteDatasetAsync(con, sql,param);
+            }
+        }
+
+        /// <summary>
+        /// Run No Query Async
+        /// </summary>
+        /// <param name="sql">SQL Query to execute.</param>
+        /// <param name="listPar">List Parametes.</param>
+        /// <returns>No Returns.</returns>
+        public Task UpdateParam(String sql, List<KeyValuePair<string,string>> listPar,String whereVal)
+        {
+            using (MySqlConnection con = new MySqlConnection(connString))
+            {
+                string strQ = "";
+                MySqlParameter[] param = new MySqlParameter[listPar.Count];
+                for (int i = 0; i < listPar.Count; i++)
+                {
+                    param[i] = new MySqlParameter("@a"+i, listPar[i].Value);
+                    strQ = strQ + listPar[i].Key + " = @a"+i+",";
+                }
+
+                sql = sql + strQ.Remove(strQ.Length-1, 1)+whereVal;
+                Console.Out.WriteLine(sql);
+                return MySqlHelper.ExecuteDatasetAsync(con, sql, param);
+            }
         }
 
         /// <summary>

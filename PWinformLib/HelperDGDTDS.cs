@@ -59,9 +59,13 @@ namespace PWinformLib
             cmx.Items.Add("Export Data", Properties.Resources.excel, MenuStripHandler);
         }
 
-        //convert datagridview data to datatable
-        //DataTable dataTable = ToDataTable(dataGridView1);
 
+        /// <summary>
+        /// Convert datagridview data to datatable
+        /// </summary>
+        /// <param name="dataGridView">Datagridview object.</param>
+        /// <param name="name">DataTable name.</param>
+        /// <returns>Returns DataTable.</returns>
         public static DataTable DGVToDataTable(DataGridView dataGridView, string name = "")
         {
             var dt = new DataTable();
@@ -94,8 +98,11 @@ namespace PWinformLib
             return dt;
         }
 
-        //convert var to datatable
-        //DataTable dtttt = VarToDataTable(detailProdLinq.ToList());
+        /// <summary>
+        /// Convert var/List object data to datatable
+        /// </summary>
+        /// <param name="items">List item.</param>
+        /// <returns>Returns DataSet.</returns>
         public static DataTable VarToDataTable<T>(List<T> items)
         {
             var tb = new DataTable(typeof(T).Name);
@@ -121,7 +128,11 @@ namespace PWinformLib
             return tb;
         }
 
-        //merubah dari json ke datatable
+        /// <summary>
+        /// Convert Json to DataTable/ use JsonConvert.DeserializeObject<DataSet>(json)
+        /// </summary>
+        /// <param name="json">json.</param>
+        /// <returns>Returns DataTable.</returns>
         public static DataTable JsonToDataTable(String json)
         {
             DataTable hasil = new DataTable();
@@ -146,7 +157,11 @@ namespace PWinformLib
             return hasil;
         }
 
-        //membersihkan datagrid
+        /// <summary>
+        /// Clear Datagridview
+        /// </summary>
+        /// <param name="dgv">Datagridview object.</param>
+        /// <returns>Datagridview cleared.</returns>
         public static void clearDatagrid(DataGridView dgv)
         {
             if (dgv.DataSource != null)
@@ -160,6 +175,11 @@ namespace PWinformLib
             }
         }
 
+        /// <summary>
+        /// Clear DataTable Row
+        /// </summary>
+        /// <param name="dt">Datagridview object.</param>
+        /// <returns>DataTable row cleared.</returns>
         public static void clearDataTableRow(DataTable dt)
         {
             if(dt!=null)
@@ -169,27 +189,54 @@ namespace PWinformLib
             }
         }
 
-        //
-        public static void AddDatePickerDGV(object sender, DataGridViewCellEventArgs e,int ColPos)
+        /// <summary>
+        /// Add datepicker to Datagridview
+        /// </summary>
+        /// <param name="dgvObj">Datagridview object.</param>
+        /// <param name="dgvEvent">Datagridview event.</param>
+        /// <param name="ColPos">Column position.</param>
+        /// <returns>Datepicker adder to Datagridview.</returns>
+        public static void AddDatePickerDGV(object dgvObj, DataGridViewCellEventArgs dgvEvent,int ColPos)
         {
-            DataGridView dgv = (DataGridView)sender;
-            if (e.ColumnIndex == ColPos)
+            DataGridView dgv = (DataGridView)dgvObj;
+            if (dgvEvent.ColumnIndex == ColPos)
             {
                 DateTimePicker dtp = new DateTimePicker();
                 dgv.Controls.Add(dtp);
-                Rectangle tempRect = dgv.GetCellDisplayRectangle(e.ColumnIndex, e.RowIndex, false);
+                Rectangle tempRect = dgv.GetCellDisplayRectangle(dgvEvent.ColumnIndex, dgvEvent.RowIndex, false);
                 dtp.Location = tempRect.Location;
                 dtp.Width = tempRect.Width;
                 dtp.CloseUp += (o, args) => { dtp.Visible = false; };
                 dtp.TextChanged += (o, args) => { dgv.CurrentCell.Value = dtp.Text.ToString(); };
                 dtp.Visible = true;
-                /*Thread.Sleep(500);
-                dgv[e.ColumnIndex,e.RowIndex].Open();*/
-                //dgv[e.ColumnIndex,e.RowIndex].
             }
         }
-        //Set combobox value from dgv
-        public static void setComboDgv(DataGridViewColumn dgvC, DataTable dt)
+
+        /// <summary>
+        /// Set Combobox value from DataTable, datatable [text,value]
+        /// </summary>
+        /// <param name="cb">ComboBox Object.</param>
+        /// <param name="dt">DataTable name.</param>
+        /// <returns>Returns Combobox filled with DataTable.</returns>
+        public static void ComboItemsAdd(ComboBox cb, DataTable dt)
+        {
+            foreach (DataRow dr in dt.Rows)
+            {
+                ComboboxItem item = new ComboboxItem();
+                item.Text = dr[0].ToString();
+                item.Value = dr[1].ToString();
+
+                cb.Items.Add(item);
+            }
+        }
+
+        /// <summary>
+        /// Set DatagridviewcolumnCombobox value from DataTable
+        /// </summary>
+        /// <param name="dgvC">Datagridviewcolumn.</param>
+        /// <param name="dt">DataTable name.</param>
+        /// <returns>Returns Combobox filled with DataTable.</returns>
+        public static void setComboDt(DataGridViewColumn dgvC, DataTable dt)
         {
             DataGridViewComboBoxColumn theColumn = (DataGridViewComboBoxColumn)dgvC;
             theColumn.Items.Clear();
@@ -199,16 +246,19 @@ namespace PWinformLib
             }
         }
 
-        //private void dgv_Direct_EditingControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)
-        //{
-        //    bantu.datagrid_OnlyNumber(dgv_Direct, e, new int[] { 1, 2 });
-        //}
-        public static void datagrid_OnlyNumber(DataGridView dgv, DataGridViewEditingControlShowingEventArgs e, int[] kolom)
+        /// <summary>
+        /// Make datagrid column only accept number |datagrid_OnlyNumber(dgv_Direct, e, new int[] { 1, 2 });
+        /// </summary>
+        /// <param name="dgv">Datagridview object.</param>
+        /// <param name="dgvEvent">Datagridview event.</param>
+        /// <param name="columnnum">Array number column index.</param>
+        /// <returns>Returns DataSet.</returns>
+        public static void datagrid_OnlyNumber(DataGridView dgv, DataGridViewEditingControlShowingEventArgs dgvEvent, int[] columnnum)
         {
-            e.Control.KeyPress -= new KeyPressEventHandler(Helper.text_OnlyNumberEvent);
-            if (kolom.Contains(dgv.CurrentCell.ColumnIndex))
+            dgvEvent.Control.KeyPress -= new KeyPressEventHandler(Helper.text_OnlyNumberEvent);
+            if (columnnum.Contains(dgv.CurrentCell.ColumnIndex))
             {
-                TextBox tb = e.Control as TextBox;
+                TextBox tb = dgvEvent.Control as TextBox;
                 if (tb != null)
                 {
                     tb.KeyPress += new KeyPressEventHandler(Helper.text_OnlyNumberEvent);
@@ -216,7 +266,12 @@ namespace PWinformLib
             }
         }
 
-        //List<String> groupNameList = bantu.getUniqueValuefromDgv(dgv, "dir_operator");
+        /// <summary>
+        /// Get unique value from Datagridview
+        /// </summary>
+        /// <param name="dgv">Datagridview object.</param>
+        /// <param name="ColumnName">Datagridview column name.</param>
+        /// <returns>Returns List string unique value.</returns>
         public static List<string> getUniqueValuefromDgv(DataGridView dgv, String ColumnName)
         {
             var vv = dgv.Rows.Cast<DataGridViewRow>()
@@ -228,28 +283,44 @@ namespace PWinformLib
             return vv;
         }
 
-        public static void MergeRowTextboxColumnEx(DataGridView dgv, int kolom, DataGridViewContentAlignment alignment = DataGridViewContentAlignment.MiddleCenter)
+        /// <summary>
+        /// Merge Row TextboxColumnEx
+        /// </summary>
+        /// <param name="dgv">Datagridview object.</param>
+        /// <param name="columnnum">Column index.</param>
+        /// <param name="alignment">Column Content Alignment.</param>
+        /// <returns>Returns Merged Row.</returns>
+        public static void MergeRowTextboxColumnEx(DataGridView dgv, int columnnum, DataGridViewContentAlignment alignment = DataGridViewContentAlignment.MiddleCenter)
         {
-            String isi = dgv[kolom, 0].Value.ToString();
+            String isi = dgv[columnnum, 0].Value.ToString();
             int idxAwal = 0;
             for (int i = 1; i < dgv.RowCount; i++)
             {
-                if (!dgv[kolom, i].Value.ToString().Equals(isi))
+                if (!dgv[columnnum, i].Value.ToString().Equals(isi))
                 {
-                    ((DataGridViewTextBoxCellEx)dgv[kolom, idxAwal]).RowSpan = i - idxAwal;
-                    ((DataGridViewTextBoxCellEx) dgv[kolom, idxAwal]).Style.Alignment = alignment;
+                    ((DataGridViewTextBoxCellEx)dgv[columnnum, idxAwal]).RowSpan = i - idxAwal;
+                    ((DataGridViewTextBoxCellEx) dgv[columnnum, idxAwal]).Style.Alignment = alignment;
                     idxAwal = i;
-                    isi = dgv[kolom, i].Value.ToString();
+                    isi = dgv[columnnum, i].Value.ToString();
                 }
                 else if (i == dgv.RowCount - 1 && idxAwal < i)
                 {
-                    ((DataGridViewTextBoxCellEx)dgv[kolom, idxAwal]).RowSpan = i - (idxAwal - 1);
-                    ((DataGridViewTextBoxCellEx)dgv[kolom, idxAwal]).Style.Alignment = alignment;
-                    isi = dgv[kolom, i].Value.ToString();
+                    ((DataGridViewTextBoxCellEx)dgv[columnnum, idxAwal]).RowSpan = i - (idxAwal - 1);
+                    ((DataGridViewTextBoxCellEx)dgv[columnnum, idxAwal]).Style.Alignment = alignment;
+                    isi = dgv[columnnum, i].Value.ToString();
                 }
             }
         }
 
+        /// <summary>
+        /// Merge Row TextboxColumnEx
+        /// </summary>
+        /// <param name="dgv">Datagridview object.</param>
+        /// <param name="colNumber">Datagridview Column Number.</param>
+        /// <param name="firstRow">First Row Index.</param>
+        /// <param name="length">Length merge.</param>
+        /// <param name="alignment">Column Content Alignment.</param>
+        /// <returns>Returns Merged Column.</returns>
         public static void MergeRowTextboxColumnEx(DataGridView dgv,int colNumber, int firstRow, int length, DataGridViewContentAlignment alignment = DataGridViewContentAlignment.MiddleCenter)
         {
 
@@ -257,7 +328,12 @@ namespace PWinformLib
             ((DataGridViewTextBoxCellEx)dgv[colNumber, firstRow]).Style.Alignment = alignment;
         }
 
-        //List<String> groupNameList = bantu.getUniqueValuefromDgv(dgv, "dir_operator");
+        /// <summary>
+        /// Get Unique Value from DataTable
+        /// </summary>
+        /// <param name="dt">DataTable object.</param>
+        /// <param name="ColumnName">Column name.</param>
+        /// <returns>Returns List string unique value.</returns>
         public static List<string> getUniqueValuefromDataTable(DataTable dt, String ColumnName)
         {
             var vv = dt.AsEnumerable()
@@ -268,6 +344,14 @@ namespace PWinformLib
             return vv;
         }
 
+        /// <summary>
+        /// Merge Cell In Row
+        /// </summary>
+        /// <param name="dgv">Datagridview object.</param>
+        /// <param name="row">row index name.</param>
+        /// <param name="col1">Column 1 index.</param>
+        /// <param name="col2">Colum 2 index.</param>
+        /// <returns>Returns Merged Cell.</returns>
         public static void MergeCellsInRow(DataGridView dgv, int row, int col1, int col2)
         {
             Graphics g = dgv.CreateGraphics();
@@ -289,6 +373,14 @@ namespace PWinformLib
             g.DrawString(recValue, dgv.DefaultCellStyle.Font, new SolidBrush(dgv.DefaultCellStyle.ForeColor), newCell.X + 3, newCell.Y + 3);
         }
 
+        /// <summary>
+        /// Merge Cell in column
+        /// </summary>
+        /// <param name="dgv">Datagridview object.</param>
+        /// <param name="col">Column index.</param>
+        /// <param name="row1">First row index.</param>
+        /// <param name="row2">Second row index.</param>
+        /// <returns>Returns Merged Cell.</returns>
         public static void MergeCellsInColumn(DataGridView dgv, int col, int row1, int row2)
         {
             Graphics g = dgv.CreateGraphics();
@@ -317,6 +409,12 @@ namespace PWinformLib
             private int ColumnIndex;
         }
 
+        /// <summary>
+        /// Convert datagridview data to datatable
+        /// </summary>
+        /// <param name="dataGridView">Datagridview object.</param>
+        /// <param name="name">DataTable name.</param>
+        /// <returns>Returns DataSet.</returns>
         public static void AddHeaderCheckBox(DataGridView dgv,int ColumnIndex,int SizeBox=15)
         {
             CheckBox HeaderCheckBox = new CheckBox();
@@ -335,6 +433,12 @@ namespace PWinformLib
             GetTextLocation(dgv, hcBox.CheckBox, ColumnIndex);*/
 
         }
+        /// <summary>
+        /// Convert datagridview data to datatable
+        /// </summary>
+        /// <param name="dataGridView">Datagridview object.</param>
+        /// <param name="name">DataTable name.</param>
+        /// <returns>Returns DataSet.</returns>
         private static void GetTextLocation(DataGridView dgv,CheckBox cb,int ColumnIndex)
         {
             //Get the column header cell bounds
@@ -349,6 +453,12 @@ namespace PWinformLib
             cb.Location = oPoint;
         }
 
+        /// <summary>
+        /// Convert datagridview data to datatable
+        /// </summary>
+        /// <param name="dataGridView">Datagridview object.</param>
+        /// <param name="name">DataTable name.</param>
+        /// <returns>Returns DataSet.</returns>
         private static void HeaderCheckBox_MouseClick(object sender, MouseEventArgs e)
         {
             CheckBox cbBox = (CheckBox) sender;

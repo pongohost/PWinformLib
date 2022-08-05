@@ -21,6 +21,8 @@ namespace PWinformLib.UI
                 {
                     TitleText = Title,
                     ContentText = Message,
+                    ContentFont = CustomFont.GetFont("Helve", 10, FontStyle.Regular),
+                    TitleFont = CustomFont.GetFont("Helve", 12, FontStyle.Regular),
                     AnimationInterval = 10,
                     AutoHide = Autohide,
                     ShowOptionsButton = false,
@@ -37,7 +39,7 @@ namespace PWinformLib.UI
             }
             else
             {
-                AntriPesan("Info", Title, Message);
+                AntriPesan("Info", Title, Message,Autohide);
             }
         }
 
@@ -70,7 +72,7 @@ namespace PWinformLib.UI
             }
             else
             {
-                AntriPesan("Error", Title, Message);
+                AntriPesan("Error", Title, Message, Autohide);
             }
         }
 
@@ -104,7 +106,7 @@ namespace PWinformLib.UI
             }
             else
             {
-                AntriPesan("Ok", Title, Message);
+                AntriPesan("Ok", Title, Message, Autohide);
             }
         }
 
@@ -119,6 +121,8 @@ namespace PWinformLib.UI
                 {
                     TitleText = Title,
                     ContentText = Message,
+                    ContentFont = CustomFont.GetFont("Helve", 10, FontStyle.Regular),
+                    TitleFont = CustomFont.GetFont("Helve", 12, FontStyle.Regular),
                     AnimationInterval = 10,
                     AutoHide = Autohide,
                     ShowOptionsButton = false,
@@ -135,7 +139,7 @@ namespace PWinformLib.UI
             }
             else
             {
-                AntriPesan("Warn", Title, Message);
+                AntriPesan("Warn", Title, Message, Autohide);
             }
         }
 
@@ -153,23 +157,24 @@ namespace PWinformLib.UI
             {
                 pesan nilai = (pesan)listMsg[0];
                 if (nilai.jenis.Equals("Error"))
-                    Error(nilai.judul, nilai.isi);
+                    Error(nilai.judul, nilai.isi,nilai.autohide);
                 if (nilai.jenis.Equals("Ok"))
-                    Ok(nilai.judul, nilai.isi);
+                    Ok(nilai.judul, nilai.isi, nilai.autohide);
                 if (nilai.jenis.Equals("Warn"))
-                    Warn(nilai.judul, nilai.isi);
+                    Warn(nilai.judul, nilai.isi, nilai.autohide);
                 if (nilai.jenis.Equals("Info"))
-                    Info(nilai.judul, nilai.isi);
+                    Info(nilai.judul, nilai.isi, nilai.autohide);
                 listMsg.RemoveAt(0);
             }
         }
 
-        private static void AntriPesan(String jenis, String Title, String Message)
+        private static void AntriPesan(String jenis, String Title, String Message,bool autclose)
         {
             pesan msgPesan = new pesan();
             msgPesan.jenis = jenis;
             msgPesan.judul = Title;
             msgPesan.isi = Message;
+            msgPesan.autohide = autclose;
             listMsg.Add(msgPesan);
         }
 
@@ -204,6 +209,7 @@ namespace PWinformLib.UI
             public String jenis { get; set; }
             public String judul { get; set; }
             public String isi { get; set; }
+            public bool autohide { get; set; }
         }
     }
 }
